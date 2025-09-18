@@ -1,0 +1,10 @@
+include: package:flutter_lints/flutter.yaml
+
+# Additional rules can be added here
+linter:
+  rules:
+    # Enable additional lints that help with code quality
+    avoid_print: false
+    prefer_single_quotes: true
+    prefer_const_constructors: true
+    prefer_const_literals_to_create_immutables: true
