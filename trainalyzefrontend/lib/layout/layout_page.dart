@@ -8,10 +8,11 @@ class LayoutPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[700],
       body: Row(
         children: [
-          const Sidebar(), // eigene Komponente
-          Expanded(child: child), // hier erscheinen die Seiten
+          const Sidebar(),
+          Expanded(child: child), 
         ],
       ),
     );

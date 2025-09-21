@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       routerConfig: AppRouter.router,
-      title: 'Sidebar + GoRouter Demo',
+      title: 'Trainalyze',
       theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.deepPurple),
     );
   }
