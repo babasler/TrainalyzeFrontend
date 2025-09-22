@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:trainalyzefrontend/enviroment/env.dart';
 
 class Sidebar extends StatelessWidget {
   const Sidebar({super.key});
@@ -10,7 +11,7 @@ class Sidebar extends StatelessWidget {
 
     return Container(
       width: 255,
-      color: Colors.grey[500],
+      color: AppColors.sidebarBackground,
       child: Column(
         children: [
           Padding(padding: const EdgeInsets.fromLTRB(0.0, 64.0, 0.0, 8.0)),
@@ -51,10 +52,9 @@ class Sidebar extends StatelessWidget {
             "Neuer Trainingsplan",
             location,
           ),
-          _buildNavItem(context, "/profile", Icons.person, "Profil", location),
           _buildNavItem(
             context,
-            "statistics",
+            "/statistics",
             Icons.info,
             "Statistiken",
             location,
@@ -73,15 +73,15 @@ class Sidebar extends StatelessWidget {
   ) {
     final bool selected = location == path;
     return ListTile(
-      leading: Icon(icon, color: selected ? Colors.purple : Colors.grey[800]),
+      leading: Icon(icon, color: selected ? AppColors.primary: AppColors.textPrimary),
       title: Text(
         label,
         style: TextStyle(
-          color: selected ? Colors.purple : Colors.grey[800],
+          color: selected ? AppColors.primary : AppColors.textPrimary,
           fontWeight: selected ? FontWeight.bold : FontWeight.normal,
         ),
       ),
-      tileColor: selected ? Colors.deepPurple : null,
+      tileColor: selected ? AppColors.primaryVariant : null,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(9)),
       onTap: () => context.go(path),
     );

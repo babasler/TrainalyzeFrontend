@@ -1,0 +1,78 @@
+import 'package:flutter/material.dart';
+import 'package:muscle_selector/muscle_selector.dart';
+import 'package:trainalyzefrontend/pages/new_exercise/used_muscles/muscle_selector.dart';
+
+class SelectorChart extends StatefulWidget {
+  const SelectorChart({super.key});
+
+  @override
+  State<SelectorChart> createState() => _SelectorChartState();
+}
+
+class _SelectorChartState extends State<SelectorChart> {
+  Set<Muscle>? selectedMuscles;
+
+  // Define initial selected muscles (replace with actual Muscle instances as needed)
+  final Set<Muscle> myInitialMuscles = {};
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 300,
+      height: 500,
+      child: MuscleSelector(
+        width: 350,
+        height: 450,
+        selectedColor: Colors.green,
+        strokeColor: Colors.blue,
+        initialSelectedMuscles: myInitialMuscles,
+        onMusclesChanged: (muscles) {
+          // Verarbeite die ausgewählten Muskeln
+          setState(() {
+            selectedMuscles = muscles;
+          });
+        },
+      ),
+    );
+  }
+}
+
+class ExerciseForm extends StatefulWidget {
+  @override
+  _ExerciseFormState createState() => _ExerciseFormState();
+}
+
+class _ExerciseFormState extends State<ExerciseForm> {
+  Set<Muscle>? selectedMuscles;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        // Andere Formular-Felder...
+
+        MuscleSelector(
+          onMusclesChanged: (muscles) {
+            setState(() {
+              selectedMuscles = muscles;
+            });
+          },
+        ),
+
+        ElevatedButton(
+          onPressed: () {
+            // Speichere Übung mit selectedMuscles
+            _saveExercise();
+          },
+          child: Text('Übung speichern'),
+        ),
+      ],
+    );
+  }
+
+  void _saveExercise() {
+    if (selectedMuscles != null) {
+      print('Speichere Übung mit Muskeln: $selectedMuscles');
+    }
+  }
+}

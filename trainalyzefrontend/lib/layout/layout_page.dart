@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trainalyzefrontend/enviroment/env.dart';
 import 'sidebar.dart';
 
 class LayoutPage extends StatelessWidget {
@@ -8,7 +9,7 @@ class LayoutPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[700],
+      backgroundColor: AppColors.background,
       body: Row(
         children: [
           const Sidebar(),
