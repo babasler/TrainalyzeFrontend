@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:muscle_selector/muscle_selector.dart';
+import 'package:trainalyzefrontend/enviroment/env.dart';
 
 /// Komponente zur Auswahl von Muskeln für Übungen
 class MuscleSelector extends StatefulWidget {
@@ -12,14 +13,14 @@ class MuscleSelector extends StatefulWidget {
   final Color dotColor;
   final bool actAsToggle;
   final bool isEditing;
-  
+
   const MuscleSelector({
     super.key,
     this.initialSelectedMuscles,
     this.onMusclesChanged,
     this.width,
     this.height,
-    this.selectedColor = Colors.lightBlueAccent,
+    this.selectedColor = AppColors.primary,
     this.strokeColor = Colors.black,
     this.dotColor = Colors.black,
     this.actAsToggle = true,
@@ -61,107 +62,90 @@ class _MuscleSelectorState extends State<MuscleSelector> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 5,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Header mit Titel und Clear Button
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Responsive Größen basierend auf verfügbarem Platz
+        final double containerWidth = constraints.maxWidth.clamp(
+          200.0,
+          AppDimensions.chartWidth,
+        );
+        final double containerHeight = constraints.maxHeight.clamp(
+          300.0,
+          AppDimensions.chartHeight,
+        );
+
+        return Center(
+          // Zentriere den gesamten Container im verfügbaren Raum
+          child: Container(
+            width: containerWidth,
+            height: containerHeight,
+            decoration: BoxDecoration(
+              color: AppColors.surface,
+              borderRadius: AppDimensions.borderRadiusLarge,
+            ),
+            child: Column(
               children: [
-                const Text(
-                  'Beanspruchte Muskeln',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                // Überschrift
+                Padding(
+                  padding: EdgeInsets.only(
+                    top: containerHeight * 0.03,
+                    bottom: containerHeight * 0.02,
+                  ),
+                  child: Text(
+                    'Muskelgruppen auswählen',
+                    style: TextStyle(
+                      fontSize: containerWidth * 0.06,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.textPrimary,
+                      fontFamily: 'SF Pro Display', // Neutrale Schriftart
+                    ),
+                    textAlign: TextAlign.center,
                   ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.clear, color: Colors.red),
-                  onPressed: _clearSelection,
-                  tooltip: 'Auswahl löschen',
+                // Chart-Bereich
+                Expanded(
+                  child: Stack(
+                    children: [
+                      // Hauptinhalt
+                      Positioned.fill(
+                        child: Padding(
+                          padding: EdgeInsets.all(containerWidth * 0.03),
+                          child: Center(
+                            child: Transform.translate(
+                              offset: Offset(
+                                -containerWidth * 0.04,
+                                containerHeight * 0.05,
+                              ),
+                              child: SizedBox(
+                                width: containerWidth,
+                                height:
+                                    containerHeight *
+                                    0.8, // Angepasst für Überschrift
+                                child: MusclePickerMap(
+                                  key: _mapKey,
+                                  width: containerWidth,
+                                  height: containerHeight * 0.8,
+                                  map: Maps.BODY,
+                                  isEditing: widget.isEditing,
+                                  onChanged: _onMusclesChanged,
+                                  actAsToggle: widget.actAsToggle,
+                                  dotColor: widget.dotColor,
+                                  selectedColor: widget.selectedColor,
+                                  strokeColor: widget.strokeColor,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
           ),
-          
-          // Muscle Picker
-          InteractiveViewer(
-            scaleEnabled: true,
-            panEnabled: true,
-            constrained: true,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: SizedBox(
-                width: widget.width ?? 300,
-                height: widget.height ?? 400,
-                child: MusclePickerMap(
-                  key: _mapKey,
-                  width: widget.width ?? 300,
-                  height: widget.height ?? 400,
-                  map: Maps.BODY,
-                  isEditing: widget.isEditing,
-                  onChanged: _onMusclesChanged,
-                  actAsToggle: widget.actAsToggle,
-                  dotColor: widget.dotColor,
-                  selectedColor: widget.selectedColor,
-                  strokeColor: widget.strokeColor,
-                ),
-              ),
-            ),
-          ),
-          
-          // Info über ausgewählte Muskeln
-          if (selectedMuscles != null && selectedMuscles!.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Ausgewählte Muskeln:',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 8),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 4,
-                    children: selectedMuscles!.map((muscle) {
-                      return Chip(
-                        label: Text(
-                          muscle.toString(),
-                          style: const TextStyle(fontSize: 12),
-                        ),
-                        backgroundColor: widget.selectedColor.withOpacity(0.2),
-                        deleteIcon: const Icon(Icons.close, size: 16),
-                        onDeleted: () {
-                          setState(() {
-                            selectedMuscles!.remove(muscle);
-                          });
-                          _onMusclesChanged(selectedMuscles);
-                        },
-                      );
-                    }).toList(),
-                  ),
-                ],
-              ),
-            ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

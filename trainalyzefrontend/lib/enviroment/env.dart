@@ -36,10 +36,21 @@ class AppDimensions {
   static const double paddingLarge = 24.0;
   static const double paddingXLarge = 32.0;
   
+  // Responsive Breakpoints
+  static const double mobileBreakpoint = 768.0;
+  static const double tabletBreakpoint = 1024.0;
+  
+  // Sidebar Dimensionen
+  static const double sidebarWidthMobile = 80.0;
+  static const double sidebarWidthTablet = 220.0;
+  static const double sidebarWidthDesktop = 255.0;
 
   static BorderRadiusGeometry borderRadiusSmall = BorderRadiusGeometry.circular(8.0);
   static BorderRadiusGeometry borderRadiusMedium = BorderRadiusGeometry.circular(12.0);
   static BorderRadiusGeometry borderRadiusLarge = BorderRadiusGeometry.circular(16.0);
+
+  static const double chartWidth = 300.0;
+  static const double chartHeight = 500.0;
 
 }
   

@@ -17,22 +17,14 @@ class _SelectorChartState extends State<SelectorChart> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 300,
-      height: 500,
-      child: MuscleSelector(
-        width: 350,
-        height: 450,
-        selectedColor: Colors.green,
-        strokeColor: Colors.blue,
-        initialSelectedMuscles: myInitialMuscles,
-        onMusclesChanged: (muscles) {
-          // Verarbeite die ausgewählten Muskeln
-          setState(() {
-            selectedMuscles = muscles;
-          });
-        },
-      ),
+    return MuscleSelector(
+      initialSelectedMuscles: myInitialMuscles,
+      onMusclesChanged: (muscles) {
+        // Verarbeite die ausgewählten Muskeln
+        setState(() {
+          selectedMuscles = muscles;
+        });
+      },
     );
   }
 }
@@ -49,22 +41,12 @@ class _ExerciseFormState extends State<ExerciseForm> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // Andere Formular-Felder...
-
         MuscleSelector(
           onMusclesChanged: (muscles) {
             setState(() {
               selectedMuscles = muscles;
             });
           },
-        ),
-
-        ElevatedButton(
-          onPressed: () {
-            // Speichere Übung mit selectedMuscles
-            _saveExercise();
-          },
-          child: Text('Übung speichern'),
         ),
       ],
     );
