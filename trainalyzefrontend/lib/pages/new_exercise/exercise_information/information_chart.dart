@@ -26,13 +26,14 @@ class _InformationChartState extends State<InformationChart> {
   // Getters für die Werte
   String get exerciseName => _exerciseName;
   ExerciseType? get selectedExerciseType => _selectedType;
-  MuscleSymmetry? get selectedMuscleSymmetry => _selectedSymmetry; // Hinzugefügt
+  MuscleSymmetry? get selectedMuscleSymmetry =>
+      _selectedSymmetry; // Hinzugefügt
 
   void saveExercise() {
     if (_exerciseName.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Bitte Übungsname eingeben')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Bitte Übungsname eingeben')));
       return;
     }
 
@@ -62,18 +63,19 @@ class _InformationChartState extends State<InformationChart> {
         return Center(
           child: Container(
             width: containerWidth,
-            height: containerHeight,
+            height: containerHeight, // Feste Höhe wie die anderen Charts
             decoration: BoxDecoration(
               color: AppColors.surface,
-              borderRadius: AppDimensions.borderRadiusLarge, // Abgerundete Ecken
+              borderRadius: AppDimensions.borderRadiusLarge,
             ),
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                // Überschrift
+                // Überschrift (fixiert)
                 Padding(
-                  padding: EdgeInsets.only(
-                    top: containerHeight * 0.04,
-                    bottom: containerHeight * 0.03,
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 16.0,
+                    horizontal: 16.0,
                   ),
                   child: Text(
                     'Übungsinformationen',
@@ -81,18 +83,23 @@ class _InformationChartState extends State<InformationChart> {
                       fontSize: containerWidth * 0.06,
                       fontWeight: FontWeight.w500,
                       color: AppColors.textPrimary,
-                      fontFamily: 'SF Pro Display', // Neutrale Schriftart
+                      fontFamily: 'SF Pro Display',
                     ),
                     textAlign: TextAlign.center,
                   ),
                 ),
-                // Formular-Bereich
+                // Scrollbarer Formular-Bereich
                 Expanded(
-                  child: Center(
+                  // Zurück zu Expanded für verfügbaren Platz innerhalb der festen Höhe
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                      vertical: 8.0,
+                    ),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Padding(padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 8.0)),
+                        const SizedBox(height: 8),
                         ExerciseName(
                           onNameChanged: (String name) {
                             setState(() {
@@ -100,6 +107,7 @@ class _InformationChartState extends State<InformationChart> {
                             });
                           },
                         ),
+                        const SizedBox(height: 16),
                         ExerciseTypeSelector(
                           onTypeChanged: (ExerciseType? type) {
                             setState(() {
@@ -107,6 +115,7 @@ class _InformationChartState extends State<InformationChart> {
                             });
                           },
                         ),
+                        const SizedBox(height: 16),
                         MuscleSymmetrySelector(
                           onSymmetryChanged: (MuscleSymmetry? symmetry) {
                             setState(() {
@@ -114,6 +123,7 @@ class _InformationChartState extends State<InformationChart> {
                             });
                           },
                         ),
+                        const SizedBox(height: 16), // Extra Platz am Ende
                       ],
                     ),
                   ),

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:trainalyzefrontend/enviroment/env.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:trainalyzefrontend/enviroment/env.dart';
+import 'package:trainalyzefrontend/services/auth_service.dart';
 
 class Sidebar extends StatelessWidget {
   const Sidebar({super.key});
@@ -11,34 +12,21 @@ class Sidebar extends StatelessWidget {
     final String location = GoRouterState.of(context).uri.toString();
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
-    
-    // Prüfe ob Querformat (weniger Höhe verfügbar)
-    final bool isLandscape = screenWidth > screenHeight;
-    
-    // Responsive Sidebar-Breite basierend auf Display-Typ
-    double sidebarWidth;
-    double logoSize;
-    double topPadding;
-    
-    if (screenWidth < AppDimensions.mobileBreakpoint) {
-      // iPhone/Smartphone: Schmale Sidebar
-      sidebarWidth = AppDimensions.sidebarWidthMobile;
-      logoSize = isLandscape ? 30 : 40; // Kleineres Logo im Querformat
-      topPadding = isLandscape ? 16 : 32; // Weniger Padding im Querformat
-    } else if (screenWidth < AppDimensions.tabletBreakpoint) {
-      // iPad/Tablet: Mittlere Sidebar (bleibt gleich in beiden Orientierungen)
-      sidebarWidth = AppDimensions.sidebarWidthTablet;
-      logoSize = isLandscape ? 60 : 80;
-      topPadding = isLandscape ? 24 : 48;
-    } else {
-      // Desktop/große Tablets: Volle Sidebar (bleibt gleich in beiden Orientierungen)
-      sidebarWidth = AppDimensions.sidebarWidthDesktop;
-      logoSize = isLandscape ? 90 : 120;
-      topPadding = isLandscape ? 32 : 64;
-    }
-    
-    // Kompakte Sidebar NUR für iPhone im Querformat
-    final bool isCompact = screenWidth < AppDimensions.mobileBreakpoint && isLandscape;
+
+    // Verwende zentralisierte Responsive-Berechnungen
+    final double sidebarWidth = AppResponsive.getSidebarWidth(screenWidth);
+    final double logoSize = AppResponsive.getLogoSize(
+      screenWidth,
+      screenHeight,
+    );
+    final double topPadding = AppResponsive.getTopPadding(
+      screenWidth,
+      screenHeight,
+    );
+    final bool isCompact = AppResponsive.shouldUseCompactSidebar(
+      screenWidth,
+      screenHeight,
+    );
 
     return Container(
       width: sidebarWidth,
@@ -94,7 +82,14 @@ class Sidebar extends StatelessWidget {
                     location,
                     isCompact,
                   ),
-                  _buildNavItem(context, "/profile", Icons.person, "Profil", location, isCompact),
+                  _buildNavItem(
+                    context,
+                    "/profile",
+                    Icons.person,
+                    "Profil",
+                    location,
+                    isCompact,
+                  ),
                   _buildNavItem(
                     context,
                     "/statistics",
@@ -103,6 +98,13 @@ class Sidebar extends StatelessWidget {
                     location,
                     isCompact,
                   ),
+
+                  // Logout Button
+                  const SizedBox(height: 32),
+                  const Divider(),
+                  const SizedBox(height: 8),
+                  _buildLogoutButton(context, isCompact),
+
                   // Zusätzlicher Platz am Ende für besseres Scrolling
                   const SizedBox(height: 16),
                 ],
@@ -123,7 +125,7 @@ class Sidebar extends StatelessWidget {
     bool isCompact,
   ) {
     final bool selected = location == path;
-    
+
     if (isCompact) {
       // Kompakte Ansicht: Nur Icon mit Tooltip
       return Tooltip(
@@ -132,7 +134,7 @@ class Sidebar extends StatelessWidget {
           margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
           child: IconButton(
             icon: Icon(
-              icon, 
+              icon,
               color: selected ? AppColors.primary : AppColors.textPrimary,
               size: 24,
             ),
@@ -149,7 +151,10 @@ class Sidebar extends StatelessWidget {
     } else {
       // Normale Ansicht: Icon + Text
       return ListTile(
-        leading: Icon(icon, color: selected ? AppColors.primary: AppColors.textPrimary),
+        leading: Icon(
+          icon,
+          color: selected ? AppColors.primary : AppColors.textPrimary,
+        ),
         title: Text(
           label,
           style: TextStyle(
@@ -162,5 +167,66 @@ class Sidebar extends StatelessWidget {
         onTap: () => context.go(path),
       );
     }
+  }
+
+  Widget _buildLogoutButton(BuildContext context, bool isCompact) {
+    if (isCompact) {
+      // Kompakte Ansicht: Nur Icon mit Tooltip
+      return Tooltip(
+        message: 'Abmelden',
+        child: Container(
+          margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+          child: IconButton(
+            icon: Icon(Icons.logout, color: AppColors.error),
+            onPressed: () => _showLogoutDialog(context),
+          ),
+        ),
+      );
+    } else {
+      // Normale Ansicht: Icon + Text
+      return ListTile(
+        leading: Icon(Icons.logout, color: AppColors.error),
+        title: Text(
+          'Abmelden',
+          style: TextStyle(
+            color: AppColors.error,
+            fontWeight: FontWeight.normal,
+          ),
+        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(9)),
+        onTap: () => _showLogoutDialog(context),
+      );
+    }
+  }
+
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Abmelden'),
+          content: const Text('Möchtest du dich wirklich abmelden?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Abbrechen'),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.of(context).pop();
+                await AuthService.logout();
+                if (context.mounted) {
+                  context.go('/login');
+                }
+              },
+              child: Text(
+                'Abmelden',
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
