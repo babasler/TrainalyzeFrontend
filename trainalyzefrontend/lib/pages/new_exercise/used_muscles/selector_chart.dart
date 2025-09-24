@@ -30,6 +30,8 @@ class _SelectorChartState extends State<SelectorChart> {
 }
 
 class ExerciseForm extends StatefulWidget {
+  const ExerciseForm({super.key});
+
   @override
   _ExerciseFormState createState() => _ExerciseFormState();
 }

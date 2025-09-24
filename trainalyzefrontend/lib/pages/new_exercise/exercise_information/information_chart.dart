@@ -4,7 +4,6 @@ import 'package:trainalyzefrontend/enviroment/env.dart';
 import 'package:trainalyzefrontend/pages/new_exercise/exercise_information/exercise_name.dart';
 import 'package:trainalyzefrontend/pages/new_exercise/exercise_information/exercise_type_selector.dart';
 import 'package:trainalyzefrontend/pages/new_exercise/exercise_information/muscle_symmetry.dart';
-import 'package:trainalyzefrontend/pages/new_exercise/exercise_information/muscle_symmetry.dart';
 
 class InformationChart extends StatefulWidget {
   const InformationChart({super.key});

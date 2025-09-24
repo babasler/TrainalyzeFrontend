@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:trainalyzefrontend/enviroment/env.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class Sidebar extends StatelessWidget {
   const Sidebar({super.key});
@@ -72,7 +73,7 @@ class Sidebar extends StatelessWidget {
                   _buildNavItem(
                     context,
                     "/new/exercise",
-                    Icons.settings,
+                    FontAwesomeIcons.dumbbell,
                     "Neue Übung",
                     location,
                     isCompact,
@@ -80,7 +81,7 @@ class Sidebar extends StatelessWidget {
                   _buildNavItem(
                     context,
                     "/new/workout",
-                    Icons.info,
+                    FontAwesomeIcons.fire,
                     "Neues Workout",
                     location,
                     isCompact,
@@ -88,7 +89,7 @@ class Sidebar extends StatelessWidget {
                   _buildNavItem(
                     context,
                     "/new/plan",
-                    Icons.plus_one,
+                    FontAwesomeIcons.clipboardList,
                     "Neuer Trainingsplan",
                     location,
                     isCompact,

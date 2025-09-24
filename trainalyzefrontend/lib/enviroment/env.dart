@@ -42,7 +42,7 @@ class AppDimensions {
   
   // Sidebar Dimensionen
   static const double sidebarWidthMobile = 80.0;
-  static const double sidebarWidthTablet = 220.0;
+  static const double sidebarWidthTablet = 230.0;
   static const double sidebarWidthDesktop = 255.0;
 
   static BorderRadiusGeometry borderRadiusSmall = BorderRadiusGeometry.circular(8.0);
