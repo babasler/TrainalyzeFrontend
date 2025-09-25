@@ -1,7 +1,17 @@
 import 'package:flutter/material.dart';
 import 'router/router.dart';
+import 'enviroment/env.dart';
+import 'services/jwt_service.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Im Development-Modus: Token beim App-Start löschen für frischen Login
+  if (AppConfig.isDevelopmentMode) {
+    await JwtService.deleteToken();
+    print('🔄 Dev-Modus: Gespeicherte Tokens gelöscht - frischer Start!');
+  }
+
   runApp(const MyApp());
 }
 

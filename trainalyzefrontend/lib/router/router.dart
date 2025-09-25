@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:trainalyzefrontend/pages/dahsboard/dashboard.dart';
+import 'package:trainalyzefrontend/pages/in_training/in_training.dart';
 import 'package:trainalyzefrontend/pages/new_exercise/new_exercise.dart';
 import 'package:trainalyzefrontend/pages/new_plan/new_plan.dart';
 import 'package:trainalyzefrontend/pages/new_workout/new_workout.dart';
@@ -76,6 +77,10 @@ class AppRouter {
             path: '/statistics',
             pageBuilder: (context, state) =>
                 NoTransitionPage(child: Statistics()),
+          ),
+          GoRoute(
+            path: '/training',
+            pageBuilder: (context, state) => NoTransitionPage(child: InTraining()),
           ),
         ],
       ),
