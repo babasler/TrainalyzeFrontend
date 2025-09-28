@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:trainalyzefrontend/enviroment/env.dart';
-import 'package:trainalyzefrontend/services/jwt_service.dart';
+import 'package:trainalyzefrontend/services/auth/jwt_service.dart';
 
 class ApiResponse<T> {
   final bool success;

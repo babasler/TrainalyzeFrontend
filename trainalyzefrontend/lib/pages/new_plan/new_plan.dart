@@ -90,7 +90,7 @@ class _NewPlanState extends State<NewPlan> {
           children: [
             // Wochentag
             SizedBox(
-              width: 90,
+              width: 110, // Erweitert um längere Wochentagsnamen zu vermeiden
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -101,6 +101,8 @@ class _NewPlanState extends State<NewPlan> {
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                   Text(
                     'Tag $dayNumber',
@@ -108,6 +110,8 @@ class _NewPlanState extends State<NewPlan> {
                       color: AppColors.textPrimary.withOpacity(0.6),
                       fontSize: 12,
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
@@ -118,7 +122,7 @@ class _NewPlanState extends State<NewPlan> {
             // Workout-Dropdown oder Ruhetag
             Expanded(
               child: DropdownButtonFormField<String>(
-                value: selectedWorkout.isEmpty ? null : selectedWorkout,
+                initialValue: selectedWorkout.isEmpty ? null : selectedWorkout,
                 style: TextStyle(color: AppColors.textPrimary),
                 decoration: InputDecoration(
                   hintText: 'Ruhetag oder Workout auswählen',

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'router/router.dart';
 import 'enviroment/env.dart';
-import 'services/jwt_service.dart';
+import 'services/auth/jwt_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -8,7 +8,7 @@ import 'package:trainalyzefrontend/pages/profile/profile.dart';
 import 'package:trainalyzefrontend/pages/statistics/statistics.dart';
 import 'package:trainalyzefrontend/pages/login/login_page.dart';
 import 'package:trainalyzefrontend/pages/login/register_page.dart';
-import 'package:trainalyzefrontend/services/auth_service.dart';
+import 'package:trainalyzefrontend/services/auth/auth_service.dart';
 import '../layout/layout_page.dart';
 
 class AppRouter {
@@ -80,7 +80,7 @@ class AppRouter {
           ),
           GoRoute(
             path: '/training',
-            pageBuilder: (context, state) => NoTransitionPage(child: InTraining()),
+            pageBuilder: (context, state) => NoTransitionPage(child: InTrainingPage()),
           ),
         ],
       ),

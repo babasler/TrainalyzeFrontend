@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trainalyzefrontend/enviroment/env.dart';
-import 'package:trainalyzefrontend/services/auth_service.dart';
+import 'package:trainalyzefrontend/services/auth/auth_service.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});

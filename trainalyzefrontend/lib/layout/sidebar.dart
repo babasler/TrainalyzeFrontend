@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:trainalyzefrontend/enviroment/env.dart';
-import 'package:trainalyzefrontend/services/auth_service.dart';
+import 'package:trainalyzefrontend/services/auth/auth_service.dart';
 
 class Sidebar extends StatelessWidget {
   const Sidebar({super.key});
