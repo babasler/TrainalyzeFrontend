@@ -6,7 +6,16 @@ import 'package:trainalyzefrontend/pages/new_exercise/exercise_information/exerc
 import 'package:trainalyzefrontend/pages/new_exercise/exercise_information/muscle_symmetry.dart';
 
 class InformationChart extends StatefulWidget {
-  const InformationChart({super.key});
+  final Function(String)? onExerciseNameChanged;
+  final Function(ExerciseType?)? onExerciseTypeChanged;
+  final Function(MotionSymmetry?)? onMotionSymmetryChanged;
+
+  const InformationChart({
+    super.key,
+    this.onExerciseNameChanged,
+    this.onExerciseTypeChanged,
+    this.onMotionSymmetryChanged,
+  });
 
   @override
   State<InformationChart> createState() => _InformationChartState();
@@ -15,7 +24,7 @@ class InformationChart extends StatefulWidget {
 class _InformationChartState extends State<InformationChart> {
   String _exerciseName = ''; // String statt TextEditingController
   ExerciseType? _selectedType;
-  MuscleSymmetry? _selectedSymmetry; // Hinzugefügt für MuscleSymmetry
+  MotionSymmetry? _selectedSymmetry; // Hinzugefügt für MuscleSymmetry
 
   @override
   void dispose() {
@@ -26,25 +35,8 @@ class _InformationChartState extends State<InformationChart> {
   // Getters für die Werte
   String get exerciseName => _exerciseName;
   ExerciseType? get selectedExerciseType => _selectedType;
-  MuscleSymmetry? get selectedMuscleSymmetry =>
+  MotionSymmetry? get selectedMuscleSymmetry =>
       _selectedSymmetry; // Hinzugefügt
-
-  void saveExercise() {
-    if (_exerciseName.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Bitte Übungsname eingeben')));
-      return;
-    }
-
-    // Exercise erstellen und speichern
-    final exercise = Exercise(
-      name: _exerciseName,
-      type: _selectedType ?? ExerciseType.kraft,
-    );
-
-    print('Übung gespeichert: ${exercise.name}, Typ: ${exercise.type}');
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -105,6 +97,10 @@ class _InformationChartState extends State<InformationChart> {
                             setState(() {
                               _exerciseName = name;
                             });
+                            // Callback an Parent-Komponente
+                            if (widget.onExerciseNameChanged != null) {
+                              widget.onExerciseNameChanged!(name);
+                            }
                           },
                         ),
                         const SizedBox(height: 16),
@@ -113,14 +109,22 @@ class _InformationChartState extends State<InformationChart> {
                             setState(() {
                               _selectedType = type;
                             });
+                            // Callback an Parent-Komponente
+                            if (widget.onExerciseTypeChanged != null) {
+                              widget.onExerciseTypeChanged!(type);
+                            }
                           },
                         ),
                         const SizedBox(height: 16),
                         MuscleSymmetrySelector(
-                          onSymmetryChanged: (MuscleSymmetry? symmetry) {
+                          onSymmetryChanged: (MotionSymmetry? symmetry) {
                             setState(() {
                               _selectedSymmetry = symmetry;
                             });
+                            // Callback an Parent-Komponente
+                            if (widget.onMotionSymmetryChanged != null) {
+                              widget.onMotionSymmetryChanged!(symmetry);
+                            }
                           },
                         ),
                         const SizedBox(height: 16), // Extra Platz am Ende

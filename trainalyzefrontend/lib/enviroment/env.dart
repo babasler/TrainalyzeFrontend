@@ -6,7 +6,7 @@ class AppConfig {
   static const bool isDevelopmentMode = true;
 
   // API-Konfiguration
-  static const String baseUrl = 'http://trainalyze.com';
+  static const String baseUrl = 'http://neptune4:8085/trainalyze';
 
   // Dev-Mode Login-Daten (werden nur im Development-Modus verwendet)
   static const String devUsername = 'dev';
@@ -36,7 +36,6 @@ class AppColors {
 
 /// Globale Größen und Abstände
 class AppDimensions {
-  
   // Padding & Margins
   static const double paddingSmall = 8.0;
   static const double paddingMedium = 16.0;

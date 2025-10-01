@@ -3,14 +3,19 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:trainalyzefrontend/enviroment/env.dart';
 
 class EquipmentChart extends StatefulWidget {
-  const EquipmentChart({super.key});
+  final Function(String)? onEquipmentChanged;
+
+  const EquipmentChart({
+    super.key,
+    this.onEquipmentChanged,
+  });
 
   @override
   State<EquipmentChart> createState() => _EquipmentChartState();
 }
 
 class _EquipmentChartState extends State<EquipmentChart> {
-  int _selectedIndex = 0;
+  int _selectedIndex= -1;
 
   final equipmentItems = [
     {'icon': FontAwesomeIcons.dumbbell, 'text': 'Kurzhantel'},
@@ -75,8 +80,11 @@ class _EquipmentChartState extends State<EquipmentChart> {
                         selectedColor: AppColors.primary,
                         onTap: () {
                           setState(() {
-                            _selectedIndex = index; // 👈 Nur ein Element aktiv
+                            _selectedIndex = index; // 👈 Nur ein Element akiv
                           });
+                          if(widget.onEquipmentChanged != null) {
+                            widget.onEquipmentChanged!(equipmentItems[_selectedIndex]['text'] as String);
+                          }
                         },
                       );
                     },
