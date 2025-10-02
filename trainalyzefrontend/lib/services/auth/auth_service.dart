@@ -13,9 +13,8 @@ class ApiResponse<T> {
 }
 
 class AuthService {
-  static const String _loginEndpoint = '/auth/login';
-  static const String _registerEndpoint = '/auth/register';
-  // static const String _refreshEndpoint = '/auth/refresh';
+  static const String _loginEndpoint = '/login';
+  static const String _registerEndpoint = '/profile/register';
 
   /// Login mit Username und PIN
   static Future<ApiResponse<Map<String, dynamic>>> login({
@@ -28,6 +27,7 @@ class AuthService {
     }
 
     try {
+      print('Login attempt for user: $username with pin: $pin');
       final url = Uri.parse('${AppConfig.baseUrl}$_loginEndpoint');
       final response = await http.post(
         url,
@@ -79,6 +79,7 @@ class AuthService {
     }
 
     try {
+      print('Registration attempt for user: $username with pin: $pin');
       final url = Uri.parse('${AppConfig.baseUrl}$_registerEndpoint');
       final response = await http.post(
         url,
