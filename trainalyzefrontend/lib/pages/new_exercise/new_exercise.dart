@@ -5,9 +5,12 @@ import 'package:trainalyzefrontend/enviroment/env.dart';
 import 'package:trainalyzefrontend/pages/new_exercise/exercise_information/information_chart.dart';
 import 'package:trainalyzefrontend/pages/new_exercise/required_equipment/equipment_chart.dart';
 import 'package:trainalyzefrontend/pages/new_exercise/used_muscles/muscle_selector.dart';
+import 'package:trainalyzefrontend/services/exercise/exercise_service.dart';
 
 class NewExercise extends StatefulWidget {
-  const NewExercise({super.key});
+  final ExerciseService? exerciseService;
+
+  const NewExercise({super.key, this.exerciseService});
 
   @override
   State<NewExercise> createState() => _NewExerciseState();
@@ -21,6 +24,9 @@ class _NewExerciseState extends State<NewExercise> {
     muscleGroups: {},
     equipment: '',
   );
+
+  // Key für Force-Rebuild aller Child-Widgets bei Reset
+  Key _formKey = UniqueKey();
 
   // Callback-Methoden für Updates
   void _onExerciseNameChanged(String name) {
@@ -87,32 +93,54 @@ class _NewExerciseState extends State<NewExercise> {
     });
   }
 
-  void _saveExercise() {
-    print('Speichere Exercise: ${exercise.name}');
-    print('Exercise Type: ${exercise.type}');
-    print('Motion Symmetry: ${exercise.motionSymmetry}');
-    print('Selected Muscles: ${exercise.muscleGroups.toString()}');
-    print('Selected Equipment: ${exercise.equipment}');
+  /// Setzt das Exercise-Objekt und die UI zurück
+  void _resetExercise() {
+    setState(() {
+      exercise = Exercise(
+        name: '',
+        type: ExerciseType.kraft,
+        motionSymmetry: MotionSymmetry.bilateral,
+        muscleGroups: {},
+        equipment: '',
+      );
+      // Key ändern für Force-Rebuild aller Child-Widgets
+      _formKey = UniqueKey();
+    });
+  }
 
+  Future<void> _saveExercise() async {
     // Hier würde die Speichern-Logik implementiert werden
+    //TODO: Hier sollte noch Logik zum checken rein, ob alles ausgefüllt ist.
     if (exercise.name.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Bitte geben Sie einen Übungsnamen ein')),
       );
       return;
     }
+    // Verwende ExerciseService falls verfügbar, ansonsten Fallback
+    bool exerciseSavedSuccessfully = false;
+    if (widget.exerciseService != null) {
+      exerciseSavedSuccessfully = await widget.exerciseService!.saveExercise(
+        exercise,
+      );
+    }
 
-    // Erfolgsmeldung mit mehr Details
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          'Übung "${exercise.name}" erfolgreich gespeichert\n'
-          'Equipment: ${exercise.equipment}\n'
-          'Muskeln: ${exercise.muscleGroups.length} ausgewählt',
+    if (!exerciseSavedSuccessfully) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Fehler beim Speichern der Übung')),
+      );
+      return;
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Übung "${exercise.name}" erfolgreich gespeichert\n'),
+          duration: const Duration(seconds: 3),
         ),
-        duration: const Duration(seconds: 3),
-      ),
-    );
+      );
+
+      // Übung und UI zurücksetzen
+      _resetExercise();
+    }
   }
 
   @override
@@ -144,6 +172,7 @@ class _NewExerciseState extends State<NewExercise> {
                           child: Padding(
                             padding: const EdgeInsets.only(right: 8.0),
                             child: InformationChart(
+                              key: _formKey, // Force rebuild on reset
                               onExerciseNameChanged: _onExerciseNameChanged,
                               onExerciseTypeChanged: _onExerciseTypeChanged,
                               onMotionSymmetryChanged: _onMotionSymmetryChanged,
@@ -160,6 +189,9 @@ class _NewExerciseState extends State<NewExercise> {
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(12),
                               child: MuscleSelector(
+                                key: ValueKey(
+                                  'muscle_${_formKey.toString()}',
+                                ), // Force rebuild
                                 onMusclesChanged: _onMusclesChanged,
                               ),
                             ),
@@ -170,6 +202,9 @@ class _NewExerciseState extends State<NewExercise> {
                           child: Padding(
                             padding: const EdgeInsets.only(left: 8.0),
                             child: EquipmentChart(
+                              key: ValueKey(
+                                'equipment_${_formKey.toString()}',
+                              ), // Force rebuild
                               onEquipmentChanged: _onEquipmentChanged,
                             ),
                           ),
@@ -212,6 +247,7 @@ class _NewExerciseState extends State<NewExercise> {
               child: Column(
                 children: [
                   InformationChart(
+                    key: _formKey, // Force rebuild on reset
                     onExerciseNameChanged: _onExerciseNameChanged,
                     onExerciseTypeChanged: _onExerciseTypeChanged,
                     onMotionSymmetryChanged: _onMotionSymmetryChanged,
@@ -219,10 +255,20 @@ class _NewExerciseState extends State<NewExercise> {
                   const SizedBox(height: 16),
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12),
-                    child: MuscleSelector(onMusclesChanged: _onMusclesChanged),
+                    child: MuscleSelector(
+                      key: ValueKey(
+                        'muscle_${_formKey.toString()}',
+                      ), // Force rebuild
+                      onMusclesChanged: _onMusclesChanged,
+                    ),
                   ),
                   const SizedBox(height: 16),
-                  EquipmentChart(onEquipmentChanged: _onEquipmentChanged),
+                  EquipmentChart(
+                    key: ValueKey(
+                      'equipment_${_formKey.toString()}',
+                    ), // Force rebuild
+                    onEquipmentChanged: _onEquipmentChanged,
+                  ),
                   const SizedBox(height: 16.0),
                   SizedBox(
                     width: double.infinity,

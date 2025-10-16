@@ -9,6 +9,7 @@ import 'package:trainalyzefrontend/pages/statistics/statistics.dart';
 import 'package:trainalyzefrontend/pages/login/login_page.dart';
 import 'package:trainalyzefrontend/pages/login/register_page.dart';
 import 'package:trainalyzefrontend/services/auth/auth_service.dart';
+import 'package:trainalyzefrontend/services/exercise/exercise_service.dart';
 import '../layout/layout_page.dart';
 
 class AppRouter {
@@ -58,7 +59,7 @@ class AppRouter {
           GoRoute(
             path: '/new/exercise',
             pageBuilder: (context, state) =>
-                NoTransitionPage(child: NewExercise()),
+                NoTransitionPage(child: NewExercise(exerciseService: ExerciseService())),
           ),
           GoRoute(
             path: '/new/workout',
