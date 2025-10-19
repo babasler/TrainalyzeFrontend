@@ -69,7 +69,7 @@ class AuthService {
   }
 
   /// Registrierung mit Username und PIN
-  static Future<ApiResponse<Map<String, dynamic>>> register({
+  static Future<ApiResponse<String>> register({
     required String username,
     required String pin,
   }) async {
@@ -87,27 +87,43 @@ class AuthService {
         body: json.encode({'username': username, 'pin': pin}),
       );
 
-      final responseData = json.decode(response.body);
+      // Prüfen ob die Antwort JSON ist
+      dynamic responseData;
+      try {
+        responseData = json.decode(response.body);
+      } catch (e) {
+        // Keine JSON-Antwort - response.body ist bereits die Message
+        responseData = {'message': response.body};
+      }
 
       if (response.statusCode == 201 || response.statusCode == 200) {
         // Automatisch einloggen nach erfolgreicher Registrierung
-        if (responseData['token'] != null) {
+        if (responseData is Map && responseData['token'] != null) {
           await JwtService.saveToken(responseData['token']);
         }
 
-        if (responseData['user'] != null) {
+        if (responseData is Map && responseData['user'] != null) {
           await JwtService.saveUserData(responseData['user']);
         }
 
+        // Nur die Message zurückgeben
+        final message = responseData is Map 
+            ? (responseData['message']?.toString() ?? 'Registrierung erfolgreich')
+            : responseData.toString();
+
         return ApiResponse(
           success: true,
-          data: responseData,
+          data: message,
           statusCode: response.statusCode,
         );
       } else {
+        final errorMessage = responseData is Map 
+            ? (responseData['message']?.toString() ?? 'Registrierung fehlgeschlagen')
+            : responseData.toString();
+            
         return ApiResponse(
           success: false,
-          error: responseData['message'] ?? 'Registrierung fehlgeschlagen',
+          error: errorMessage,
           statusCode: response.statusCode,
         );
       }
@@ -296,7 +312,7 @@ class AuthService {
   }
 
   /// Development-Modus Registrierung (akzeptiert beliebige Daten)
-  static Future<ApiResponse<Map<String, dynamic>>> _developmentRegister(
+  static Future<ApiResponse<String>> _developmentRegister(
     String username,
     String pin,
   ) async {
@@ -320,11 +336,7 @@ class AuthService {
 
     return ApiResponse(
       success: true,
-      data: {
-        'token': devToken,
-        'user': userData,
-        'message': 'Development registration successful',
-      },
+      data: 'Development registration successful',
       statusCode: 201,
     );
   }

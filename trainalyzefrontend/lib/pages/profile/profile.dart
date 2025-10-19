@@ -1,27 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:trainalyzefrontend/entities/profile/Profile.dart';
 import 'package:trainalyzefrontend/enviroment/env.dart';
-import 'package:trainalyzefrontend/services/auth/auth_service.dart';
+import 'package:trainalyzefrontend/services/profile/profile_service.dart';
 
-class Profile extends StatefulWidget {
-  const Profile({super.key});
+class ProfilePage extends StatefulWidget {
+  const ProfilePage({super.key});
 
   @override
-  State<Profile> createState() => _ProfileState();
+  State<ProfilePage> createState() => _ProfilePageState();
 }
 
-class _ProfileState extends State<Profile> {
+class _ProfilePageState extends State<ProfilePage> {
   // Profil-Parameter
-  String _username = '';
-  String _weightIncreaseType = 'range'; // 'range' oder 'absolute'
-  double _increaseWeight = 5.0;
-  int _increaseAtReps = 12;
-  String _workoutSelection = 'plan'; // 'plan' oder 'select'
-  String? _selectedTrainingsplan;
-  String _handleMissingWorkout = 'skip'; //
-
-  // Körpergewicht und BMI
-  double _currentWeight = 70.0; // Aktuelles Gewicht in kg
-  double _height = 175.0; // Größe in cm (für BMI-Berechnung)
+  Profile _userProfile = Profile(
+    username: '',
+    weightIncreaseType: '',
+    increaseWeight: 0.5,
+    increaseAtReps: 1,
+    workoutSelection: '',
+    selectedTrainingsplan: '',
+    handleMissingWorkout: '',
+    bodyWeight: 0.0,
+    bodyHeight: 0.0,
+    bmi: 0.0,
+  );
 
   // Dropdown-Optionen
   final List<String> _weightIncreaseTypes = ['range', 'absolute'];
@@ -30,10 +32,10 @@ class _ProfileState extends State<Profile> {
 
   final List<String> _handleMissingWorkoutOptions = [
     'skip',
-    'replace',
-    'notify',
+    'postpone',
   ];
 
+  //TODO:API Nutzen
   final List<String> _availableTrainingsplans = [
     'Push/Pull/Legs',
     'Upper/Lower',
@@ -48,37 +50,30 @@ class _ProfileState extends State<Profile> {
   }
 
   Future<void> _loadUserProfile() async {
-    // Lade aktuellen User und Profil-Daten
-    final user = await AuthService.getCurrentUser();
-    if (user != null) {
-      setState(() {
-        _username = user['username'] ?? '';
-      });
-    }
-
-    // TODO: Lade gespeicherte Profil-Einstellungen
-    // Hier würdest du die gespeicherten Einstellungen aus einer API oder lokalem Storage laden
+    final profile = await ProfileService().fetchProfile();
+    setState(() {
+      _userProfile = profile;
+    });
   }
 
   Future<void> _saveProfile() async {
-    final profileData = {
-      'username': _username,
-      'weightIncreaseType': _weightIncreaseType,
-      'increaseWeight': _increaseWeight,
-      'increaseAtReps': _increaseAtReps,
-      'workoutSelection': _workoutSelection,
-      'selectedTrainingsplan': _selectedTrainingsplan,
-      'handleMissingWorkout': _handleMissingWorkout,
-    };
-
-    // TODO: Speichere Profil-Daten
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Profil erfolgreich gespeichert'),
-        backgroundColor: AppColors.primary,
-      ),
-    );
+    final success = await ProfileService().updateProfile(_userProfile);
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Profil erfolgreich gespeichert'),
+          backgroundColor: AppColors.primary,
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Fehler beim Speichern des Profils'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+    _loadUserProfile();
   }
 
   String _getDisplayText(String key, String value) {
@@ -124,15 +119,15 @@ class _ProfileState extends State<Profile> {
   }
 
   double get _bmi {
-    if (_height > 0) {
-      return _currentWeight / ((_height / 100) * (_height / 100));
+    if (_userProfile.bodyHeight > 0) {
+      return _userProfile.bodyWeight / ((_userProfile.bodyHeight / 100) * (_userProfile.bodyHeight / 100));
     }
     return 0.0;
   }
 
   Future<void> _showWeightEntryDialog() async {
     final TextEditingController weightController = TextEditingController(
-      text: _currentWeight.toString(),
+      text: _userProfile.bodyWeight.toString(),
     );
 
     await showDialog<void>(
@@ -192,7 +187,7 @@ class _ProfileState extends State<Profile> {
                 );
                 if (newWeight != null && newWeight > 0 && newWeight < 300) {
                   setState(() {
-                    _currentWeight = newWeight;
+                    _userProfile.bodyWeight = newWeight;
                   });
                   Navigator.of(context).pop();
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -217,7 +212,7 @@ class _ProfileState extends State<Profile> {
 
   Future<void> _showHeightEntryDialog() async {
     final TextEditingController heightController = TextEditingController(
-      text: _height.toString(),
+      text: _userProfile.bodyHeight.toString(),
     );
 
     await showDialog<void>(
@@ -269,7 +264,7 @@ class _ProfileState extends State<Profile> {
                 );
                 if (newHeight != null && newHeight > 50 && newHeight < 250) {
                   setState(() {
-                    _height = newHeight;
+                    _userProfile.bodyHeight = newHeight;
                   });
                   Navigator.of(context).pop();
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -309,7 +304,7 @@ class _ProfileState extends State<Profile> {
                     radius: 30,
                     backgroundColor: AppColors.primary,
                     child: Text(
-                      _username.isNotEmpty ? _username[0].toUpperCase() : '👤',
+                      _userProfile.username.isNotEmpty ? _userProfile.username[0].toUpperCase() : '👤',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 24,
@@ -323,7 +318,7 @@ class _ProfileState extends State<Profile> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          _username.isNotEmpty ? _username : 'Unbekannt',
+                          _userProfile.username.isNotEmpty ? _userProfile.username : 'Unbekannt',
                           style: TextStyle(
                             color: AppColors.textPrimary,
                             fontSize: 24,
@@ -422,7 +417,7 @@ class _ProfileState extends State<Profile> {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                '${_height.toStringAsFixed(0)} cm',
+                                '${_userProfile.bodyHeight.toStringAsFixed(0)} cm',
                                 style: TextStyle(
                                   color: AppColors.textPrimary,
                                   fontSize: 20,
@@ -450,7 +445,7 @@ class _ProfileState extends State<Profile> {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                '${_currentWeight.toStringAsFixed(1)} kg',
+                                '${_userProfile.bodyWeight.toStringAsFixed(1)} kg',
                                 style: TextStyle(
                                   color: AppColors.textPrimary,
                                   fontSize: 20,
@@ -501,29 +496,29 @@ class _ProfileState extends State<Profile> {
 
               _buildDropdownCard(
                 title: 'Steigerungsart',
-                value: _weightIncreaseType,
+                value: _userProfile.weightIncreaseType,
                 items: _weightIncreaseTypes,
                 displayText: _getDisplayText(
                   'weightIncreaseType',
-                  _weightIncreaseType,
+                  _userProfile.weightIncreaseType,
                 ),
                 onChanged: (value) =>
-                    setState(() => _weightIncreaseType = value!),
+                    setState(() => _userProfile.weightIncreaseType = value!),
               ),
 
               _buildNumberCard(
                 title: 'Steigerung (kg)',
-                value: _increaseWeight,
+                value: _userProfile.increaseWeight,
                 unit: 'kg',
-                onChanged: (value) => setState(() => _increaseWeight = value),
+                onChanged: (value) => setState(() => _userProfile.increaseWeight = value),
               ),
 
               _buildNumberCard(
                 title: 'Steigern bei Wiederholungen',
-                value: _increaseAtReps.toDouble(),
+                value: _userProfile.increaseAtReps.toDouble(),
                 unit: 'Reps',
                 onChanged: (value) =>
-                    setState(() => _increaseAtReps = value.round()),
+                    setState(() => _userProfile.increaseAtReps = value.round()),
                 isInteger: true,
               ),
 
@@ -534,38 +529,38 @@ class _ProfileState extends State<Profile> {
 
               _buildDropdownCard(
                 title: 'Workout-Auswahl',
-                value: _workoutSelection,
+                value: _userProfile.workoutSelection,
                 items: _workoutSelectionOptions,
                 displayText: _getDisplayText(
                   'workoutSelection',
-                  _workoutSelection,
+                  _userProfile.workoutSelection,
                 ),
                 onChanged: (value) =>
-                    setState(() => _workoutSelection = value!),
+                    setState(() => _userProfile.workoutSelection = value!),
               ),
 
-              if (_workoutSelection == 'plan') ...[
+              if (_userProfile.workoutSelection == 'plan') ...[
                 _buildDropdownCard(
                   title: 'Trainingsplan',
-                  value: _selectedTrainingsplan,
+                  value: _userProfile.selectedTrainingsplan,
                   items: _availableTrainingsplans,
-                  displayText: _selectedTrainingsplan ?? 'Keiner ausgewählt',
+                  displayText: _userProfile.selectedTrainingsplan,
                   onChanged: (value) =>
-                      setState(() => _selectedTrainingsplan = value),
+                      setState(() => _userProfile.selectedTrainingsplan),
                   allowNull: true,
                 ),
               ],
 
               _buildDropdownCard(
                 title: 'Fehlende Workouts',
-                value: _handleMissingWorkout,
+                value: _userProfile.handleMissingWorkout,
                 items: _handleMissingWorkoutOptions,
                 displayText: _getDisplayText(
                   'handleMissingWorkout',
-                  _handleMissingWorkout,
+                  _userProfile.handleMissingWorkout,
                 ),
                 onChanged: (value) =>
-                    setState(() => _handleMissingWorkout = value!),
+                    setState(() => _userProfile.handleMissingWorkout = value!),
               ),
 
               const SizedBox(height: 32),
@@ -702,7 +697,10 @@ class _ProfileState extends State<Profile> {
             children: [
               Expanded(
                 child: Slider(
-                  value: value,
+                  value: value.clamp(
+                    isInteger ? 1.0 : 0.5,
+                    isInteger ? 20.0 : 10.0,
+                  ),
                   min: isInteger ? 1 : 0.5,
                   max: isInteger ? 20 : 10,
                   divisions: isInteger

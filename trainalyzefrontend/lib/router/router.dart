@@ -72,7 +72,7 @@ class AppRouter {
           ),
           GoRoute(
             path: '/profile',
-            pageBuilder: (context, state) => NoTransitionPage(child: Profile()),
+            pageBuilder: (context, state) => NoTransitionPage(child: ProfilePage()),
           ),
           GoRoute(
             path: '/statistics',
