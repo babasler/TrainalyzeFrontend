@@ -4,7 +4,7 @@ import 'package:trainalyzefrontend/pages/in_training/in_training.dart';
 import 'package:trainalyzefrontend/pages/new_exercise/new_exercise.dart';
 import 'package:trainalyzefrontend/pages/new_plan/new_plan.dart';
 import 'package:trainalyzefrontend/pages/new_workout/new_workout.dart';
-import 'package:trainalyzefrontend/pages/profile/profile.dart';
+import 'package:trainalyzefrontend/pages/profile/profile_page.dart';
 import 'package:trainalyzefrontend/pages/statistics/statistics.dart';
 import 'package:trainalyzefrontend/pages/login/login_page.dart';
 import 'package:trainalyzefrontend/pages/login/register_page.dart';

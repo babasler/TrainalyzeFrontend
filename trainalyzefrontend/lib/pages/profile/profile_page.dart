@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:trainalyzefrontend/entities/profile/Profile.dart';
+import 'package:trainalyzefrontend/entities/profile/profile.dart';
 import 'package:trainalyzefrontend/enviroment/env.dart';
 import 'package:trainalyzefrontend/services/profile/profile_service.dart';
 

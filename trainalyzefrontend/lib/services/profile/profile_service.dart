@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:trainalyzefrontend/enviroment/env.dart';
 import 'package:trainalyzefrontend/services/auth/jwt_service.dart';
 
-import '../../entities/profile/Profile.dart';
+import '../../entities/profile/profile.dart';
 
 class ProfileService {
   final String profileURL = '${AppConfig.baseUrl}/profile';

@@ -1,4 +1,3 @@
-// ignore: file_names
 class Profile {
   String username;
   String weightIncreaseType;
@@ -55,4 +54,8 @@ class Profile {
       bmi: json['bmi'],
     );
   }
+}
+
+class ProfileOutputDTO {
+  
 }
