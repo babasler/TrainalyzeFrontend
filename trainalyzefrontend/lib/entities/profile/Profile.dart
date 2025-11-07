@@ -1,5 +1,4 @@
 class Profile {
-  String username;
   String weightIncreaseType;
   double increaseWeight;
   int increaseAtReps;
@@ -11,7 +10,6 @@ class Profile {
   double bmi;
 
   Profile({
-    required this.username,
     required this.weightIncreaseType,
     required this.increaseWeight,
     required this.increaseAtReps,
@@ -26,7 +24,6 @@ class Profile {
   // JSON-Serialisierung
   Map<String, dynamic> toJson() {
     return {
-      'username': username,
       'weightIncreaseType': weightIncreaseType,
       'increaseWeight': increaseWeight,
       'increaseAtReps': increaseAtReps,
@@ -42,7 +39,6 @@ class Profile {
   // JSON-Deserialisierung (für zukünftige Verwendung)
   factory Profile.fromJson(Map<String, dynamic> json) {
     return Profile(
-      username: json['username'],
       weightIncreaseType: json['weightIncreaseType'],
       increaseWeight: json['increaseWeight'],
       increaseAtReps: json['increaseAtReps'],

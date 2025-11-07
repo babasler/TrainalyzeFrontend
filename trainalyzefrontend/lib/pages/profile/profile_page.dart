@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:trainalyzefrontend/entities/profile/profile.dart';
 import 'package:trainalyzefrontend/enviroment/env.dart';
+import 'package:trainalyzefrontend/services/auth/jwt_service.dart';
 import 'package:trainalyzefrontend/services/profile/profile_service.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -11,9 +12,12 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  // Aktueller User
+  String? _username;
+
   // Profil-Parameter
+  //TODO: Username rausnehemen, da dieser nicht vom Profil, sondern vom User kommt
   Profile _userProfile = Profile(
-    username: '',
     weightIncreaseType: '',
     increaseWeight: 0.5,
     increaseAtReps: 1,
@@ -47,6 +51,7 @@ class _ProfilePageState extends State<ProfilePage> {
   void initState() {
     super.initState();
     _loadUserProfile();
+    _loadCurrentUser();
   }
 
   Future<void> _loadUserProfile() async {
@@ -54,6 +59,25 @@ class _ProfilePageState extends State<ProfilePage> {
     setState(() {
       _userProfile = profile;
     });
+  }
+
+  Future<void> _loadCurrentUser() async {
+    try {
+      // Token holen und Username extrahieren
+      final token = await JwtService.getToken();
+      if (token != null) {
+        final tokenData = JwtService.getUserFromToken(token);
+        if (tokenData != null && mounted) {
+          // Username aus Token (entweder 'username' oder 'sub')
+          final username = tokenData['username'] ?? tokenData['sub'];
+          setState(() {
+            _username = username;
+          });
+        }
+      }
+    } catch (e) {
+      print('Error loading username: $e');
+    }
   }
 
   Future<void> _saveProfile() async {
@@ -267,12 +291,6 @@ class _ProfilePageState extends State<ProfilePage> {
                     _userProfile.bodyHeight = newHeight;
                   });
                   Navigator.of(context).pop();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Körpergröße erfolgreich gespeichert'),
-                      backgroundColor: AppColors.primary,
-                    ),
-                  );
                 }
               },
               style: ElevatedButton.styleFrom(
@@ -304,7 +322,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     radius: 30,
                     backgroundColor: AppColors.primary,
                     child: Text(
-                      _userProfile.username.isNotEmpty ? _userProfile.username[0].toUpperCase() : '👤',
+                      _username?.substring(0, 1).toUpperCase() ?? 'U',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 24,
@@ -318,7 +336,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          _userProfile.username.isNotEmpty ? _userProfile.username : 'Unbekannt',
+                          _username ?? 'Lädt...',
                           style: TextStyle(
                             color: AppColors.textPrimary,
                             fontSize: 24,
@@ -634,7 +652,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           const SizedBox(height: 8),
           DropdownButtonFormField<String>(
-            initialValue: items.contains(value) ? value : null,
+            value: items.contains(value) ? value : null,
             decoration: InputDecoration(
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
@@ -652,6 +670,7 @@ class _ProfilePageState extends State<ProfilePage> {
             dropdownColor: AppColors.surface,
             style: TextStyle(color: AppColors.textPrimary),
             items: items
+                .toSet() // Entferne Duplikate
                 .map(
                   (item) => DropdownMenuItem(
                     value: item,
