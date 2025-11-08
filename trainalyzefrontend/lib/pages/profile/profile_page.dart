@@ -15,19 +15,11 @@ class _ProfilePageState extends State<ProfilePage> {
   // Aktueller User
   String? _username;
 
+  // Loading State
+  bool _isLoading = true;
+
   // Profil-Parameter
-  //TODO: Username rausnehemen, da dieser nicht vom Profil, sondern vom User kommt
-  Profile _userProfile = Profile(
-    weightIncreaseType: '',
-    increaseWeight: 0.5,
-    increaseAtReps: 1,
-    workoutSelection: '',
-    selectedTrainingsplan: '',
-    handleMissingWorkout: '',
-    bodyWeight: 0.0,
-    bodyHeight: 0.0,
-    bmi: 0.0,
-  );
+  Profile? _userProfile;
 
   // Dropdown-Optionen
   final List<String> _weightIncreaseTypes = ['range', 'absolute'];
@@ -55,10 +47,31 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> _loadUserProfile() async {
-    final profile = await ProfileService().fetchProfile();
     setState(() {
-      _userProfile = profile;
+      _isLoading = true;
     });
+
+    try {
+      final profile = await ProfileService().fetchProfile();
+      setState(() {
+        _userProfile = profile;
+        _isLoading = false;
+      });
+    } catch (e) {
+      print('Error loading profile: $e');
+      setState(() {
+        _isLoading = false;
+      });
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Profil konnte nicht geladen werden'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   Future<void> _loadCurrentUser() async {
@@ -81,7 +94,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> _saveProfile() async {
-    final success = await ProfileService().updateProfile(_userProfile);
+    final success = await ProfileService().updateProfile(_userProfile!);
     if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -143,15 +156,15 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   double get _bmi {
-    if (_userProfile.bodyHeight > 0) {
-      return _userProfile.bodyWeight / ((_userProfile.bodyHeight / 100) * (_userProfile.bodyHeight / 100));
+    if (_userProfile?.bodyHeight != null && _userProfile!.bodyHeight > 0) {
+      return _userProfile!.bodyWeight / ((_userProfile!.bodyHeight / 100) * (_userProfile!.bodyHeight / 100));
     }
     return 0.0;
   }
 
   Future<void> _showWeightEntryDialog() async {
     final TextEditingController weightController = TextEditingController(
-      text: _userProfile.bodyWeight.toString(),
+      text: _userProfile!.bodyWeight.toString(),
     );
 
     await showDialog<void>(
@@ -211,7 +224,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 );
                 if (newWeight != null && newWeight > 0 && newWeight < 300) {
                   setState(() {
-                    _userProfile.bodyWeight = newWeight;
+                    _userProfile!.bodyWeight = newWeight;
                   });
                   Navigator.of(context).pop();
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -236,7 +249,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> _showHeightEntryDialog() async {
     final TextEditingController heightController = TextEditingController(
-      text: _userProfile.bodyHeight.toString(),
+      text: _userProfile!.bodyHeight.toString(),
     );
 
     await showDialog<void>(
@@ -288,7 +301,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 );
                 if (newHeight != null && newHeight > 50 && newHeight < 250) {
                   setState(() {
-                    _userProfile.bodyHeight = newHeight;
+                    _userProfile!.bodyHeight = newHeight;
                   });
                   Navigator.of(context).pop();
                 }
@@ -310,11 +323,60 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+        child: _isLoading
+            ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(
+                      color: AppColors.primary,
+                    ),
+                    SizedBox(height: 16),
+                    Text(
+                      'Profil wird geladen...',
+                      style: TextStyle(
+                        color: AppColors.textPrimary,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            : _userProfile == null
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.error_outline,
+                          size: 64,
+                          color: Colors.red,
+                        ),
+                        SizedBox(height: 16),
+                        Text(
+                          'Profil konnte nicht geladen werden',
+                          style: TextStyle(
+                            color: AppColors.textPrimary,
+                            fontSize: 18,
+                          ),
+                        ),
+                        SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: _loadUserProfile,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            foregroundColor: Colors.white,
+                          ),
+                          child: Text('Erneut versuchen'),
+                        ),
+                      ],
+                    ),
+                  )
+                : SingleChildScrollView(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
               // Header
               Row(
                 children: [
@@ -435,7 +497,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                '${_userProfile.bodyHeight.toStringAsFixed(0)} cm',
+                                '${_userProfile!.bodyHeight.toStringAsFixed(0)} cm',
                                 style: TextStyle(
                                   color: AppColors.textPrimary,
                                   fontSize: 20,
@@ -463,7 +525,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                '${_userProfile.bodyWeight.toStringAsFixed(1)} kg',
+                                '${_userProfile!.bodyWeight.toStringAsFixed(1)} kg',
                                 style: TextStyle(
                                   color: AppColors.textPrimary,
                                   fontSize: 20,
@@ -514,29 +576,29 @@ class _ProfilePageState extends State<ProfilePage> {
 
               _buildDropdownCard(
                 title: 'Steigerungsart',
-                value: _userProfile.weightIncreaseType,
+                value: _userProfile!.weightIncreaseType,
                 items: _weightIncreaseTypes,
                 displayText: _getDisplayText(
                   'weightIncreaseType',
-                  _userProfile.weightIncreaseType,
+                  _userProfile!.weightIncreaseType,
                 ),
                 onChanged: (value) =>
-                    setState(() => _userProfile.weightIncreaseType = value!),
+                    setState(() => _userProfile!.weightIncreaseType = value!),
               ),
 
               _buildNumberCard(
                 title: 'Steigerung (kg)',
-                value: _userProfile.increaseWeight,
+                value: _userProfile!.increaseWeight,
                 unit: 'kg',
-                onChanged: (value) => setState(() => _userProfile.increaseWeight = value),
+                onChanged: (value) => setState(() => _userProfile!.increaseWeight = value),
               ),
 
               _buildNumberCard(
                 title: 'Steigern bei Wiederholungen',
-                value: _userProfile.increaseAtReps.toDouble(),
+                value: _userProfile!.increaseAtReps.toDouble(),
                 unit: 'Reps',
                 onChanged: (value) =>
-                    setState(() => _userProfile.increaseAtReps = value.round()),
+                    setState(() => _userProfile!.increaseAtReps = value.round()),
                 isInteger: true,
               ),
 
@@ -547,38 +609,38 @@ class _ProfilePageState extends State<ProfilePage> {
 
               _buildDropdownCard(
                 title: 'Workout-Auswahl',
-                value: _userProfile.workoutSelection,
+                value: _userProfile!.workoutSelection,
                 items: _workoutSelectionOptions,
                 displayText: _getDisplayText(
                   'workoutSelection',
-                  _userProfile.workoutSelection,
+                  _userProfile!.workoutSelection,
                 ),
                 onChanged: (value) =>
-                    setState(() => _userProfile.workoutSelection = value!),
+                    setState(() => _userProfile!.workoutSelection = value!),
               ),
 
-              if (_userProfile.workoutSelection == 'plan') ...[
+              if (_userProfile!.workoutSelection == 'plan') ...[
                 _buildDropdownCard(
                   title: 'Trainingsplan',
-                  value: _userProfile.selectedTrainingsplan,
+                  value: _userProfile!.selectedTrainingsplan,
                   items: _availableTrainingsplans,
-                  displayText: _userProfile.selectedTrainingsplan,
+                  displayText: _userProfile!.selectedTrainingsplan,
                   onChanged: (value) =>
-                      setState(() => _userProfile.selectedTrainingsplan),
+                      setState(() => _userProfile!.selectedTrainingsplan),
                   allowNull: true,
                 ),
               ],
 
               _buildDropdownCard(
                 title: 'Fehlende Workouts',
-                value: _userProfile.handleMissingWorkout,
+                value: _userProfile!.handleMissingWorkout,
                 items: _handleMissingWorkoutOptions,
                 displayText: _getDisplayText(
                   'handleMissingWorkout',
-                  _userProfile.handleMissingWorkout,
+                  _userProfile!.handleMissingWorkout,
                 ),
                 onChanged: (value) =>
-                    setState(() => _userProfile.handleMissingWorkout = value!),
+                    setState(() => _userProfile!.handleMissingWorkout = value!),
               ),
 
               const SizedBox(height: 32),

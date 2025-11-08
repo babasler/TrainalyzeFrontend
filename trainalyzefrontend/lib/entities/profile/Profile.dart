@@ -1,4 +1,5 @@
 class Profile {
+  double profileId;
   String weightIncreaseType;
   double increaseWeight;
   int increaseAtReps;
@@ -10,6 +11,7 @@ class Profile {
   double bmi;
 
   Profile({
+    required this.profileId,
     required this.weightIncreaseType,
     required this.increaseWeight,
     required this.increaseAtReps,
@@ -24,6 +26,7 @@ class Profile {
   // JSON-Serialisierung
   Map<String, dynamic> toJson() {
     return {
+      'profileId': profileId,
       'weightIncreaseType': weightIncreaseType,
       'increaseWeight': increaseWeight,
       'increaseAtReps': increaseAtReps,
@@ -39,6 +42,7 @@ class Profile {
   // JSON-Deserialisierung (für zukünftige Verwendung)
   factory Profile.fromJson(Map<String, dynamic> json) {
     return Profile(
+      profileId: json['profileId'],
       weightIncreaseType: json['weightIncreaseType'],
       increaseWeight: json['increaseWeight'],
       increaseAtReps: json['increaseAtReps'],
@@ -53,5 +57,39 @@ class Profile {
 }
 
 class ProfileOutputDTO {
-  
+  double profileId;
+  String weightIncreaseType;
+  double increaseWeight;
+  int increaseAtReps;
+  String workoutSelection;
+  String selectedTrainingsplan;
+  String handleMissingWorkout;
+  double bodyWeight;
+  double bodyHeight;
+
+  ProfileOutputDTO({
+    required this.profileId,
+    required this.weightIncreaseType,
+    required this.increaseWeight,
+    required this.increaseAtReps,
+    required this.workoutSelection,
+    required this.selectedTrainingsplan,
+    required this.handleMissingWorkout,
+    required this.bodyWeight,
+    required this.bodyHeight,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'profileId': profileId,
+      'weightIncreaseType': weightIncreaseType,
+      'increaseWeight': increaseWeight,
+      'increaseAtReps': increaseAtReps,
+      'workoutSelection': workoutSelection,
+      'selectedTrainingsplan': selectedTrainingsplan,
+      'handleMissingWorkout': handleMissingWorkout,
+      'bodyWeight': bodyWeight,
+      'bodyHeight': bodyHeight,
+    };
+  }
 }
