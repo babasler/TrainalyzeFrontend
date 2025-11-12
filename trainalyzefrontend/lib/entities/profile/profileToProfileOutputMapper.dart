@@ -10,7 +10,6 @@ ProfileOutputDTO mapProfileToProfileOutputDTO(
     workoutSelection: profile.workoutSelection,
     selectedTrainingsplan: profile.selectedTrainingsplan,
     handleMissingWorkout: profile.handleMissingWorkout,
-    bodyWeight: profile.bodyWeight,
     bodyHeight: profile.bodyHeight,
   );
 }

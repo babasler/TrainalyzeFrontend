@@ -1,5 +1,5 @@
 class Profile {
-  double profileId;
+  int profileId;  // Geändert von double zu int
   String weightIncreaseType;
   double increaseWeight;
   int increaseAtReps;
@@ -42,29 +42,28 @@ class Profile {
   // JSON-Deserialisierung (für zukünftige Verwendung)
   factory Profile.fromJson(Map<String, dynamic> json) {
     return Profile(
-      profileId: json['profileId'],
+      profileId: (json['profileId'] as num).toInt(),  // Geändert zu toInt()
       weightIncreaseType: json['weightIncreaseType'],
-      increaseWeight: json['increaseWeight'],
+      increaseWeight: (json['increaseWeight'] as num).toDouble(),
       increaseAtReps: json['increaseAtReps'],
       workoutSelection: json['workoutSelection'],
       selectedTrainingsplan: json['selectedTrainingsplan'],
       handleMissingWorkout: json['handleMissingWorkout'],
-      bodyWeight: json['bodyWeight'],
-      bodyHeight: json['bodyHeight'],
-      bmi: json['bmi'],
+      bodyWeight: (json['bodyWeight'] as num).toDouble(),
+      bodyHeight: (json['bodyHeight'] as num).toDouble(),
+      bmi: (json['bmi'] as num).toDouble(),
     );
   }
 }
 
 class ProfileOutputDTO {
-  double profileId;
+  int profileId;  // Geändert von double zu int
   String weightIncreaseType;
   double increaseWeight;
   int increaseAtReps;
   String workoutSelection;
   String selectedTrainingsplan;
   String handleMissingWorkout;
-  double bodyWeight;
   double bodyHeight;
 
   ProfileOutputDTO({
@@ -75,7 +74,6 @@ class ProfileOutputDTO {
     required this.workoutSelection,
     required this.selectedTrainingsplan,
     required this.handleMissingWorkout,
-    required this.bodyWeight,
     required this.bodyHeight,
   });
 
@@ -88,7 +86,6 @@ class ProfileOutputDTO {
       'workoutSelection': workoutSelection,
       'selectedTrainingsplan': selectedTrainingsplan,
       'handleMissingWorkout': handleMissingWorkout,
-      'bodyWeight': bodyWeight,
       'bodyHeight': bodyHeight,
     };
   }

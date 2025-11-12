@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trainalyzefrontend/entities/profile/bodyweight.dart';
 import 'package:trainalyzefrontend/entities/profile/profile.dart';
 import 'package:trainalyzefrontend/enviroment/env.dart';
 import 'package:trainalyzefrontend/services/auth/jwt_service.dart';
@@ -113,6 +114,30 @@ class _ProfilePageState extends State<ProfilePage> {
     _loadUserProfile();
   }
 
+  Future<void> _saveBodyWeight(double newWeight) async {
+    final bodyWeight = BodyWeight(
+      weight: newWeight,
+      date: DateTime.now(),
+    );
+    final success = await ProfileService().safeBodyWeight(bodyWeight);
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Gewicht erfolgreich gespeichert'),
+          backgroundColor: AppColors.primary,
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Fehler beim Speichern des Gewichts'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+    _loadUserProfile();
+  }
+
   String _getDisplayText(String key, String value) {
     switch (key) {
       case 'weightIncreaseType':
@@ -155,12 +180,6 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-  double get _bmi {
-    if (_userProfile?.bodyHeight != null && _userProfile!.bodyHeight > 0) {
-      return _userProfile!.bodyWeight / ((_userProfile!.bodyHeight / 100) * (_userProfile!.bodyHeight / 100));
-    }
-    return 0.0;
-  }
 
   Future<void> _showWeightEntryDialog() async {
     final TextEditingController weightController = TextEditingController(
@@ -222,18 +241,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 final double? newWeight = double.tryParse(
                   weightController.text,
                 );
-                if (newWeight != null && newWeight > 0 && newWeight < 300) {
-                  setState(() {
-                    _userProfile!.bodyWeight = newWeight;
-                  });
-                  Navigator.of(context).pop();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Gewicht erfolgreich gespeichert'),
-                      backgroundColor: AppColors.primary,
-                    ),
-                  );
-                }
+                _saveBodyWeight(newWeight!);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
@@ -553,7 +561,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                _bmi.toStringAsFixed(1),
+                                _userProfile!.bmi.toStringAsFixed(1),
                                 style: TextStyle(
                                   color: AppColors.textPrimary,
                                   fontSize: 20,
