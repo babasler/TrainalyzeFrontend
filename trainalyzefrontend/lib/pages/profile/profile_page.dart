@@ -623,33 +623,48 @@ class _ProfilePageState extends State<ProfilePage> {
                   'workoutSelection',
                   _userProfile!.workoutSelection,
                 ),
-                onChanged: (value) =>
-                    setState(() => _userProfile!.workoutSelection = value!),
+                onChanged: (value) {
+                  setState(() {
+                    _userProfile!.workoutSelection = value!;
+                    // Setze Trainingsplan und Fehlende Workouts auf "NONE", wenn "Auswählen" gewählt wird
+                    if (value == 'select') {
+                      _userProfile!.selectedTrainingsplan = 'NONE';
+                      _userProfile!.handleMissingWorkout = 'NONE';
+                    }
+                  });
+                },
               ),
 
               if (_userProfile!.workoutSelection == 'plan') ...[
                 _buildDropdownCard(
                   title: 'Trainingsplan',
-                  value: _userProfile!.selectedTrainingsplan,
+                  value: _userProfile!.selectedTrainingsplan == 'NONE' 
+                      ? null 
+                      : _userProfile!.selectedTrainingsplan,
                   items: _availableTrainingsplans,
-                  displayText: _userProfile!.selectedTrainingsplan,
+                  displayText: _userProfile!.selectedTrainingsplan == 'NONE'
+                      ? ''
+                      : _userProfile!.selectedTrainingsplan,
                   onChanged: (value) =>
-                      setState(() => _userProfile!.selectedTrainingsplan),
+                      setState(() => _userProfile!.selectedTrainingsplan = value ?? 'NONE'),
                   allowNull: true,
                 ),
-              ],
-
-              _buildDropdownCard(
-                title: 'Fehlende Workouts',
-                value: _userProfile!.handleMissingWorkout,
-                items: _handleMissingWorkoutOptions,
-                displayText: _getDisplayText(
-                  'handleMissingWorkout',
-                  _userProfile!.handleMissingWorkout,
+                _buildDropdownCard(
+                  title: 'Fehlende Workouts',
+                  value: _userProfile!.handleMissingWorkout == 'NONE'
+                      ? null
+                      : _userProfile!.handleMissingWorkout,
+                  items: _handleMissingWorkoutOptions,
+                  displayText: _userProfile!.handleMissingWorkout == 'NONE'
+                      ? ''
+                      : _getDisplayText(
+                          'handleMissingWorkout',
+                          _userProfile!.handleMissingWorkout,
+                        ),
+                  onChanged: (value) =>
+                      setState(() => _userProfile!.handleMissingWorkout = value ?? 'NONE'),
                 ),
-                onChanged: (value) =>
-                    setState(() => _userProfile!.handleMissingWorkout = value!),
-              ),
+              ],
 
               const SizedBox(height: 32),
 
