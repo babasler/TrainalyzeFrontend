@@ -114,7 +114,7 @@ class _ProfilePageState extends State<ProfilePage> {
     _loadUserProfile();
   }
 
-  Future<void> _saveBodyWeight(double newWeight) async {
+  Future<bool> _saveBodyWeight(double newWeight) async {
     final bodyWeight = BodyWeight(
       weight: newWeight,
       date: DateTime.now(),
@@ -127,6 +127,8 @@ class _ProfilePageState extends State<ProfilePage> {
           backgroundColor: AppColors.primary,
         ),
       );
+      _loadUserProfile();
+      return true;
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -134,8 +136,8 @@ class _ProfilePageState extends State<ProfilePage> {
           backgroundColor: Colors.red,
         ),
       );
+      return false;
     }
-    _loadUserProfile();
   }
 
   String _getDisplayText(String key, String value) {
@@ -237,11 +239,16 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 final double? newWeight = double.tryParse(
                   weightController.text,
                 );
-                _saveBodyWeight(newWeight!);
+                if (newWeight != null && newWeight > 0 && newWeight < 300) {
+                  final success = await _saveBodyWeight(newWeight);
+                  if (success) {
+                    Navigator.of(context).pop(); // Schließe Dialog bei Erfolg
+                  }
+                }
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,

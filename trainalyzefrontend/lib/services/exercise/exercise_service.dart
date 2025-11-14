@@ -15,6 +15,7 @@ class ExerciseService {
 
       // JWT-Headers abrufen (enthält Authorization und Content-Type)
       final headers = await JwtService.getAuthHeaders();
+      print("Saving Exercise: ${exercise.toJson()}");
 
       final response = await http.post(
         url,

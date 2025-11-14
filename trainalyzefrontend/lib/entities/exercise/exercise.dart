@@ -26,8 +26,9 @@ class Exercise {
       'type': type.name, // Enum als String
       'motionSymmetry': motionSymmetry.name, // Enum als String
       'muscleGroups': muscleGroups
-          .map((muscle) => muscle.toString())
-          .toList(), // Set<Muscle> als List<String>
+          .map((muscle) => muscle.id.replaceAll(RegExp(r'\d+$'), '')) // Entferne Zahlen am Ende
+          .toSet() // Entferne Duplikate
+          .toList(), // Zurück zu List
       'equipment': equipment,
     };
   }
