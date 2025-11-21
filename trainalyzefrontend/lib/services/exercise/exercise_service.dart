@@ -33,7 +33,7 @@ class ExerciseService {
     }
   }
 
-  Future<List<Exercise>> fetchExercises() async {
+  Future<List<ExerciseInputDTO>> fetchExercises() async {
     try {
       final url = Uri.parse('$exerciseURL/get');
 
@@ -44,7 +44,7 @@ class ExerciseService {
 
       if (response.statusCode == 200) {
         final List<dynamic> responseData = jsonDecode(response.body);
-        return responseData.map((data) => Exercise.fromJson(data)).toList();
+        return responseData.map((data) => ExerciseInputDTO.fromJson(data)).toList();
       } else {
         return []; // Fehler beim Abrufen
       }

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 /// Globale Umgebungsvariablen und Konstanten für die App
 class AppConfig {
   // Development-Modus (setzt auf true für lokale Entwicklung ohne Backend)
-  static const bool isDevelopmentMode = false;
+  static const bool isDevelopmentMode = true;
 
   // API-Konfiguration
   static const String baseUrl = 'http://localhost:8084/trainalyze';

@@ -36,7 +36,7 @@ class ExerciseTypeList extends StatefulWidget {
 }
 
 class _ExerciseTypeListState extends State<ExerciseTypeList> {
-  ExerciseType? _selectedType = ExerciseType.kraft;
+  ExerciseType? _selectedType = ExerciseType.KRAFT;
 
   // Getter für den aktuell ausgewählten Typ
   ExerciseType? get selectedExerciseType => _selectedType;
@@ -61,17 +61,17 @@ class _ExerciseTypeListState extends State<ExerciseTypeList> {
             child: Column(
               children: <Widget>[
                 RadioListTile<ExerciseType>(
-                  value: ExerciseType.kraft,
+                  value: ExerciseType.KRAFT,
                   title: Text('Kraft'),
                   fillColor: WidgetStateProperty.all(AppColors.primary),
                 ),
                 RadioListTile<ExerciseType>(
-                  value: ExerciseType.cardio,
+                  value: ExerciseType.CARDIO,
                   title: Text('Cardio'),
                   fillColor: WidgetStateProperty.all(AppColors.primary),
                 ),
                 RadioListTile<ExerciseType>(
-                  value: ExerciseType.mobility,
+                  value: ExerciseType.MOBILITY,
                   title: Text('Mobility'),
                   fillColor: WidgetStateProperty.all(AppColors.primary),
                 ),

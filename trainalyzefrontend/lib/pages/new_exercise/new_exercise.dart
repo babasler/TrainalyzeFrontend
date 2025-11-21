@@ -19,7 +19,7 @@ class NewExercise extends StatefulWidget {
 class _NewExerciseState extends State<NewExercise> {
   Exercise exercise = Exercise(
     name: '',
-    type: ExerciseType.kraft,
+    type: ExerciseType.KRAFT,
     motionSymmetry: MotionSymmetry.bilateral,
     muscleGroups: {},
     equipment: '',
@@ -98,7 +98,7 @@ class _NewExerciseState extends State<NewExercise> {
     setState(() {
       exercise = Exercise(
         name: '',
-        type: ExerciseType.kraft,
+        type: ExerciseType.KRAFT,
         motionSymmetry: MotionSymmetry.bilateral,
         muscleGroups: {},
         equipment: '',
