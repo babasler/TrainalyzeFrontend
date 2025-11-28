@@ -41,16 +41,6 @@ class _MuscleSelectorState extends State<MuscleSelector> {
     selectedMuscles = widget.initialSelectedMuscles;
   }
 
-  void _clearSelection() {
-    _mapKey.currentState?.clearSelect();
-    setState(() {
-      selectedMuscles = null;
-    });
-    if (widget.onMusclesChanged != null) {
-      widget.onMusclesChanged!(null);
-    }
-  }
-
   void _onMusclesChanged(Set<Muscle>? muscles) {
     setState(() {
       selectedMuscles = muscles;

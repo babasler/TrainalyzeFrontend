@@ -15,6 +15,7 @@ class TrainingSection extends StatefulWidget {
 
   @override
   State<TrainingSection> createState() => _TrainingSectionState();
+
 }
 
 class _TrainingSectionState extends State<TrainingSection> {
