@@ -7,10 +7,10 @@ class PauseSection extends BaseSection {
   bool isDurationPause;
 
   PauseSection({
-    int? id,
+    super.id,
     required this.duration,
     required this.isDurationPause,
-  }) : super(id: id, sectionType: SectionType.pause);
+  }) : super(sectionType: SectionType.pause);
 
   factory PauseSection.fromJson(Map<String, dynamic> json) {
     return PauseSection(

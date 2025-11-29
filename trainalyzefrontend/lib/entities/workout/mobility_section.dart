@@ -4,8 +4,8 @@ import 'section_type.dart';
 
 class MobilitySection extends BaseSection {
   MobilitySection({
-    int? id,
-  }) : super(id: id, sectionType: SectionType.mobility);
+    super.id,
+  }) : super(sectionType: SectionType.mobility);
 
   factory MobilitySection.fromJson(Map<String, dynamic> json) {
     return MobilitySection(

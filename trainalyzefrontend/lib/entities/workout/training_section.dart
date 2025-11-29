@@ -7,9 +7,9 @@ class TrainingSection extends BaseSection {
   List<ExerciseSection> exerciseSections;
 
   TrainingSection({
-    int? id,
+    super.id,
     required this.exerciseSections,
-  }) : super(id: id, sectionType: SectionType.training);
+  }) : super(sectionType: SectionType.training);
 
   factory TrainingSection.fromJson(Map<String, dynamic> json) {
     return TrainingSection(

@@ -292,7 +292,7 @@ class AuthService {
     final userData = {
       'id': 1,
       'username': username,
-      'email': '${username}@dev.local',
+      'email': '$username@dev.local',
       'created_at': DateTime.now().toIso8601String(),
     };
 
@@ -326,7 +326,7 @@ class AuthService {
     final userData = {
       'id': DateTime.now().millisecondsSinceEpoch,
       'username': username,
-      'email': '${username}@dev.local',
+      'email': '$username@dev.local',
       'created_at': DateTime.now().toIso8601String(),
     };
 

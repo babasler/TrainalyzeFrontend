@@ -744,7 +744,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           const SizedBox(height: 8),
           DropdownButtonFormField<String>(
-            value: items.contains(value) ? value : null,
+            initialValue: items.contains(value) ? value : null,
             decoration: InputDecoration(
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),

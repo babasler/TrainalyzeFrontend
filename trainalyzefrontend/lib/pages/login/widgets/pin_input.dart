@@ -19,7 +19,7 @@ class PinInput extends StatefulWidget {
   final bool autofocus;
 
   const PinInput({
-    Key? key,
+    super.key,
     this.length = 4,
     required this.onCompleted,
     this.onChanged,
@@ -35,7 +35,7 @@ class PinInput extends StatefulWidget {
     this.textStyle,
     this.errorText,
     this.autofocus = true,
-  }) : super(key: key);
+  });
 
   @override
   State<PinInput> createState() => _PinInputState();

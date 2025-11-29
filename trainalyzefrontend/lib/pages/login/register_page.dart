@@ -5,7 +5,7 @@ import 'package:trainalyzefrontend/pages/login/widgets/pin_input.dart';
 import 'package:trainalyzefrontend/enviroment/env.dart';
 
 class RegisterPage extends StatefulWidget {
-  const RegisterPage({Key? key}) : super(key: key);
+  const RegisterPage({super.key});
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();

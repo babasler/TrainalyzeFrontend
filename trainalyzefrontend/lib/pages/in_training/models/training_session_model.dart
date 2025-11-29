@@ -86,10 +86,10 @@ class WarmUpSession extends TrainingSessionItem {
     required this.exerciseName,
     this.duration,
     this.isDurationBased = false,
-    bool isCompleted = false,
-    DateTime? startTime,
-    DateTime? endTime,
-  }) : super(isCompleted: isCompleted, startTime: startTime, endTime: endTime);
+    super.isCompleted,
+    super.startTime,
+    super.endTime,
+  });
 }
 
 // Pause Session
@@ -100,10 +100,10 @@ class PauseSession extends TrainingSessionItem {
   PauseSession({
     required this.duration,
     this.isDurationBased = true,
-    bool isCompleted = false,
-    DateTime? startTime,
-    DateTime? endTime,
-  }) : super(isCompleted: isCompleted, startTime: startTime, endTime: endTime);
+    super.isCompleted,
+    super.startTime,
+    super.endTime,
+  });
 }
 
 class TrainingExerciseSession extends TrainingSessionItem {
@@ -121,10 +121,10 @@ class TrainingExerciseSession extends TrainingSessionItem {
     required this.sets,
     required this.pauseConfig,
     this.lastWorkoutData,
-    bool isCompleted = false,
-    DateTime? startTime,
-    DateTime? endTime,
-  }) : super(isCompleted: isCompleted, startTime: startTime, endTime: endTime);
+    super.isCompleted,
+    super.startTime,
+    super.endTime,
+  });
 
   // Ist diese Übung abgeschlossen?
   @override

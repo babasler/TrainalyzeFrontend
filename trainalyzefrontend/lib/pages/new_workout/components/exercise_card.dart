@@ -159,7 +159,7 @@ class _ExerciseCardState extends State<ExerciseCard> {
 
             // Exercise Dropdown
             DropdownButtonFormField<String>(
-              value: _selectedExercise,
+              initialValue: _selectedExercise,
               style: TextStyle(color: AppColors.textPrimary),
               decoration: InputDecoration(
                 labelText: 'Übung auswählen',

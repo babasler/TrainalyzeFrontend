@@ -7,10 +7,10 @@ class WarmUpSection extends BaseSection {
   bool isDurationWarmUp;
 
   WarmUpSection({
-    int? id,
+    super.id,
     required this.duration,
     required this.isDurationWarmUp,
-  }) : super(id: id, sectionType: SectionType.warmup);
+  }) : super(sectionType: SectionType.warmup);
 
   factory WarmUpSection.fromJson(Map<String, dynamic> json) {
     return WarmUpSection(
