@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:trainalyzefrontend/entities/workout/warmup_section.dart';
 import 'package:trainalyzefrontend/enviroment/env.dart';
 import 'package:trainalyzefrontend/pages/new_workout/models/workout_model.dart';
 
 class WarmUpCard extends StatefulWidget {
-  final WorkoutSection section;
-  final Function(WorkoutSection) onUpdate;
+  final WarmUpSection section;
+  final Function(WarmUpSection) onUpdate;
 
   const WarmUpCard({
     super.key,
@@ -25,9 +26,9 @@ class _WarmUpCardState extends State<WarmUpCard> {
   void initState() {
     super.initState();
     _durationController = TextEditingController(
-      text: widget.section.duration ?? '10:00',
+      text: widget.section.duration.toString(),
     );
-    _isDurationWarmUp = widget.section.isDurationWarmUp ?? true;
+    _isDurationWarmUp = widget.section.isDurationWarmUp;
   }
 
   @override
@@ -37,8 +38,8 @@ class _WarmUpCardState extends State<WarmUpCard> {
   }
 
   void _updateSection() {
-    final updatedSection = WorkoutSection(
-      type: SectionType.warmUp,
+    final updatedSection = WarmUpSection(
+      type: SectionType.warmup,
       duration: _isDurationWarmUp && _durationController.text.isNotEmpty
           ? _durationController.text
           : null,

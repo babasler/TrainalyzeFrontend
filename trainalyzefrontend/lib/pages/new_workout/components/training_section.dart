@@ -6,8 +6,8 @@ import 'package:trainalyzefrontend/enviroment/env.dart';
 import 'package:trainalyzefrontend/pages/new_workout/components/exercise_card.dart';
 
 class TrainingSection extends StatefulWidget {
-  final ExerciseSection section;
-  final Function(ExerciseSection) onUpdate;
+  final TrainingSection section;
+  final Function(TrainingSection) onUpdate;
 
   const TrainingSection({
     super.key,
@@ -32,12 +32,9 @@ class _TrainingSectionState extends State<TrainingSection> {
   void _addExercise() {
     setState(() {
       _exercises.add(
-        ExerciseSection(
-          name: '',
-          sets: 3,
-          reps: 12,
-          weight: 20.0,
-          pauseSection: PauseSection(duration: 60, isDurationPause: true),
+        TrainingSection(
+          type: SectionType.training,
+          exercises: [],
         ),
       );
     });

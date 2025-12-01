@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:trainalyzefrontend/entities/workout/base_section.dart';
 import 'package:trainalyzefrontend/entities/workout/mobility_section.dart';
 import 'package:trainalyzefrontend/entities/workout/section_type.dart';
+import 'package:trainalyzefrontend/entities/workout/warmup_section.dart';
 import 'package:trainalyzefrontend/enviroment/env.dart';
 import 'package:trainalyzefrontend/pages/new_workout/components/warm_up_section.dart';
 import 'package:trainalyzefrontend/pages/new_workout/components/training_section.dart';
@@ -117,9 +118,9 @@ class SectionCard extends StatelessWidget {
   Widget _buildSectionContent() {
     switch (section.sectionType) {
       case SectionType.warmup:
-        return WarmUpCard(section: section, onUpdate: onUpdate);
+        return WarmUpCard(section: section as WarmUpSection, onUpdate: onUpdate);
       case SectionType.training:
-        return TrainingSection(section: section, onUpdate: onUpdate);
+        return TrainingSection(section: section as TrainingSection, onUpdate: onUpdate);
       case SectionType.mobility:
         return MobilityCard(section: section as MobilitySection, onUpdate: onUpdate);
       case SectionType.pause:
