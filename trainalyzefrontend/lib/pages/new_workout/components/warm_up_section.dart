@@ -2,22 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:trainalyzefrontend/enviroment/env.dart';
 import 'package:trainalyzefrontend/pages/new_workout/models/workout_model.dart';
 
-class WarmUpSection extends StatefulWidget {
+class WarmUpCard extends StatefulWidget {
   final WorkoutSection section;
   final Function(WorkoutSection) onUpdate;
 
-  const WarmUpSection({
+  const WarmUpCard({
     super.key,
     required this.section,
     required this.onUpdate,
   });
 
   @override
-  State<WarmUpSection> createState() => _WarmUpSectionState();
+  State<WarmUpCard> createState() => _WarmUpCardState();
 
 }
 
-class _WarmUpSectionState extends State<WarmUpSection> {
+class _WarmUpCardState extends State<WarmUpCard> {
   late TextEditingController _durationController;
   late bool _isDurationWarmUp;
 

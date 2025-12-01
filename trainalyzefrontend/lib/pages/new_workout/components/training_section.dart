@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:trainalyzefrontend/entities/workout/exercise_section.dart';
+import 'package:trainalyzefrontend/entities/workout/pause_section.dart';
+import 'package:trainalyzefrontend/entities/workout/section_type.dart';
 import 'package:trainalyzefrontend/enviroment/env.dart';
-import 'package:trainalyzefrontend/pages/new_workout/models/workout_model.dart';
 import 'package:trainalyzefrontend/pages/new_workout/components/exercise_card.dart';
 
 class TrainingSection extends StatefulWidget {
-  final WorkoutSection section;
-  final Function(WorkoutSection) onUpdate;
+  final ExerciseSection section;
+  final Function(ExerciseSection) onUpdate;
 
   const TrainingSection({
     super.key,
@@ -19,7 +21,7 @@ class TrainingSection extends StatefulWidget {
 }
 
 class _TrainingSectionState extends State<TrainingSection> {
-  late List<WorkoutExercise> _exercises;
+  late List<ExerciseSection> _exercises;
 
   @override
   void initState() {
@@ -30,12 +32,12 @@ class _TrainingSectionState extends State<TrainingSection> {
   void _addExercise() {
     setState(() {
       _exercises.add(
-        WorkoutExercise(
+        ExerciseSection(
           name: '',
           sets: 3,
-          repsPerSet: 12,
+          reps: 12,
           weight: 20.0,
-          pauseAfterSets: PauseModel(duration: '60', isDurationPause: true),
+          pauseSection: PauseSection(duration: 60, isDurationPause: true),
         ),
       );
     });
@@ -49,7 +51,7 @@ class _TrainingSectionState extends State<TrainingSection> {
     _updateSection();
   }
 
-  void _updateExercise(int index, WorkoutExercise exercise) {
+  void _updateExercise(int index, ExerciseSection exercise) {
     setState(() {
       _exercises[index] = exercise;
     });
@@ -57,7 +59,7 @@ class _TrainingSectionState extends State<TrainingSection> {
   }
 
   void _updateSection() {
-    final updatedSection = WorkoutSection(
+    final updatedSection = ExerciseSection(
       type: SectionType.training,
       exercises: List.from(_exercises),
     );

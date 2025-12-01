@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:trainalyzefrontend/entities/workout/base_section.dart';
+import 'package:trainalyzefrontend/entities/workout/mobility_section.dart';
+import 'package:trainalyzefrontend/entities/workout/section_type.dart';
 import 'package:trainalyzefrontend/enviroment/env.dart';
-import 'package:trainalyzefrontend/pages/new_workout/models/workout_model.dart';
 import 'package:trainalyzefrontend/pages/new_workout/components/warm_up_section.dart';
 import 'package:trainalyzefrontend/pages/new_workout/components/training_section.dart';
 import 'package:trainalyzefrontend/pages/new_workout/components/mobility_card.dart';
 
 class SectionCard extends StatelessWidget {
-  final WorkoutSection section;
-  final Function(WorkoutSection) onUpdate;
+  final BaseSection section;
+  final Function(BaseSection) onUpdate;
   final VoidCallback onRemove;
 
   const SectionCard({
@@ -18,35 +20,41 @@ class SectionCard extends StatelessWidget {
   });
 
   String _getSectionTitle() {
-    switch (section.type) {
-      case SectionType.warmUp:
+    switch (section.sectionType) {
+      case SectionType.warmup:
         return 'Warm Up';
       case SectionType.training:
         return 'Training';
       case SectionType.mobility:
         return 'Mobility';
+      case SectionType.pause:
+        return 'Pause';
     }
   }
 
   IconData _getSectionIcon() {
-    switch (section.type) {
-      case SectionType.warmUp:
+    switch (section.sectionType) {
+      case SectionType.warmup:
         return Icons.whatshot;
       case SectionType.training:
         return Icons.fitness_center;
       case SectionType.mobility:
         return Icons.self_improvement;
+      case SectionType.pause:
+        return Icons.pause_circle_filled;
     }
   }
 
   Color _getSectionColor() {
-    switch (section.type) {
-      case SectionType.warmUp:
+    switch (section.sectionType) {
+      case SectionType.warmup:
         return Colors.orange;
       case SectionType.training:
         return AppColors.primary;
       case SectionType.mobility:
         return Colors.green;
+      case SectionType.pause:
+        return Colors.blueGrey;
     }
   }
 
@@ -107,13 +115,16 @@ class SectionCard extends StatelessWidget {
   }
 
   Widget _buildSectionContent() {
-    switch (section.type) {
-      case SectionType.warmUp:
-        return WarmUpSection(section: section, onUpdate: onUpdate);
+    switch (section.sectionType) {
+      case SectionType.warmup:
+        return WarmUpCard(section: section, onUpdate: onUpdate);
       case SectionType.training:
         return TrainingSection(section: section, onUpdate: onUpdate);
       case SectionType.mobility:
-        return MobilityCard(section: section, onUpdate: onUpdate);
+        return MobilityCard(section: section as MobilitySection, onUpdate: onUpdate);
+      case SectionType.pause:
+        return Container(); // Placeholder for pause section
     }
+    
   }
 }
