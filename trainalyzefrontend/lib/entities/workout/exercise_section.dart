@@ -3,16 +3,18 @@ import 'pause_section.dart';
 
 class ExerciseSection {
   int? id;
+  String name;
   int sets;
-  int repetitions;
+  int reps;
   double weight;
   int exerciseId;
   PauseSection? pauseSection;
 
   ExerciseSection({
     this.id,
+    required this.name,
     required this.sets,
-    required this.repetitions,
+    required this.reps,
     required this.weight,
     required this.exerciseId,
     this.pauseSection,
@@ -21,8 +23,9 @@ class ExerciseSection {
   factory ExerciseSection.fromJson(Map<String, dynamic> json) {
     return ExerciseSection(
       id: json['id'] as int?,
+      name: json['name'] as String,
       sets: json['sets'] as int,
-      repetitions: json['repetitions'] as int,
+      reps: json['reps'] as int,
       weight: (json['weight'] as num).toDouble(),
       exerciseId: json['exerciseId'] as int,
       pauseSection: json['pauseSection'] != null
@@ -34,8 +37,9 @@ class ExerciseSection {
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
+      'name': name,
       'sets': sets,
-      'repetitions': repetitions,
+      'reps': reps,
       'weight': weight,
       'exerciseId': exerciseId,
       if (pauseSection != null) 'pauseSection': pauseSection!.toJson(),

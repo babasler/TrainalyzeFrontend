@@ -3,7 +3,7 @@ import 'package:trainalyzefrontend/enviroment/env.dart';
 import 'package:trainalyzefrontend/pages/new_workout/models/workout_model.dart';
 import 'package:trainalyzefrontend/pages/new_workout/components/warm_up_section.dart';
 import 'package:trainalyzefrontend/pages/new_workout/components/training_section.dart';
-import 'package:trainalyzefrontend/pages/new_workout/components/mobility_section.dart';
+import 'package:trainalyzefrontend/pages/new_workout/components/mobility_card.dart';
 
 class SectionCard extends StatelessWidget {
   final WorkoutSection section;
@@ -113,7 +113,7 @@ class SectionCard extends StatelessWidget {
       case SectionType.training:
         return TrainingSection(section: section, onUpdate: onUpdate);
       case SectionType.mobility:
-        return MobilitySection(section: section, onUpdate: onUpdate);
+        return MobilityCard(section: section, onUpdate: onUpdate);
     }
   }
 }

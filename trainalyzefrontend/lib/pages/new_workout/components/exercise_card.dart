@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:trainalyzefrontend/entities/workout/pause_section.dart';
 import 'package:trainalyzefrontend/enviroment/env.dart';
-import 'package:trainalyzefrontend/pages/new_workout/models/workout_model.dart';
+import 'package:trainalyzefrontend/entities/workout/exercise_section.dart';
 
 class ExerciseCard extends StatefulWidget {
-  final WorkoutExercise exercise;
+  final ExerciseSection exercise;
   final bool isTraining; // true = Training Section, false = Mobility Section
-  final Function(WorkoutExercise) onUpdate;
+  final Function(ExerciseSection) onUpdate;
   final VoidCallback onRemove;
 
   const ExerciseCard({
@@ -67,15 +68,15 @@ class _ExerciseCardState extends State<ExerciseCard> {
       text: widget.exercise.sets.toString(),
     );
     _repsController = TextEditingController(
-      text: widget.exercise.repsPerSet.toString(),
+      text: widget.exercise.reps.toString(),
     );
     _weightController = TextEditingController(
-      text: widget.exercise.weight?.toString() ?? '20.0',
+      text: widget.exercise.weight.toString(),
     );
     _pauseDurationController = TextEditingController(
-      text: widget.exercise.pauseAfterSets?.duration ?? '60',
+      text: widget.exercise.pauseSection?.duration.toString() ?? '60',
     );
-    _isPauseDuration = widget.exercise.pauseAfterSets?.isDurationPause ?? true;
+    _isPauseDuration = widget.exercise.pauseSection?.isDurationPause ?? true;
   }
 
   @override
@@ -88,18 +89,19 @@ class _ExerciseCardState extends State<ExerciseCard> {
   }
 
   void _updateExercise() {
-    final updatedExercise = WorkoutExercise(
+    final updatedExercise = ExerciseSection(
+      exerciseId: 0,
       name: _selectedExercise,
       sets: int.tryParse(_setsController.text) ?? 0,
-      repsPerSet: int.tryParse(_repsController.text) ?? 0,
+      reps: int.tryParse(_repsController.text) ?? 0,
       weight: widget.isTraining
           ? (double.tryParse(_weightController.text) ?? 0.0)
-          : null,
-      pauseAfterSets: widget.isTraining && _isPauseDuration
-          ? PauseModel(
+          : 0.0,
+      pauseSection: widget.isTraining && _isPauseDuration
+          ? PauseSection(
               duration: _pauseDurationController.text.isNotEmpty
-                  ? _pauseDurationController.text
-                  : '0',
+                  ? double.tryParse(_pauseDurationController.text) ?? 0
+                  : 0,
               isDurationPause: _isPauseDuration,
             )
           : null,
