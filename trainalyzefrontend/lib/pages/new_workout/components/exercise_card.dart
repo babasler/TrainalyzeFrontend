@@ -28,7 +28,7 @@ class _ExerciseCardState extends State<ExerciseCard> {
   late bool _isPauseDuration;
   late String _selectedExercise;
 
-  // Dummy-Übungslisten
+  // TODO: Api nutzen
   final List<String> _trainingExercises = [
     'Bankdrücken',
     'Kniebeugen',
@@ -41,7 +41,7 @@ class _ExerciseCardState extends State<ExerciseCard> {
     'Ausfallschritte',
     'Dumbbell Press',
   ];
-
+  //TODO: API nutzen
   final List<String> _mobilityExercises = [
     'Katze-Kuh Stretch',
     'Hip Flexor Stretch',
