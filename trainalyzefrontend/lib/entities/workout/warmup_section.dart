@@ -3,7 +3,7 @@ import 'base_section.dart';
 import 'section_type.dart';
 
 class WarmUpSection extends BaseSection {
-  double duration;
+  String duration;
   bool isDurationWarmUp;
 
   WarmUpSection({
@@ -15,7 +15,7 @@ class WarmUpSection extends BaseSection {
   factory WarmUpSection.fromJson(Map<String, dynamic> json) {
     return WarmUpSection(
       id: json['id'] as int?,
-      duration: (json['duration'] as num).toDouble(),
+      duration: json['duration'] as String,
       isDurationWarmUp: json['isDurationWarmUp'] as bool,
     );
   }

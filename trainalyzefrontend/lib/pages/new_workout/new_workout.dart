@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:trainalyzefrontend/entities/workout/section_type.dart';
+import 'package:trainalyzefrontend/entities/workout/workout.dart';
+import 'package:trainalyzefrontend/entities/workout/base_section.dart';
+import 'package:trainalyzefrontend/entities/workout/warmup_section.dart';
+import 'package:trainalyzefrontend/entities/workout/training_section.dart' as model;
+import 'package:trainalyzefrontend/entities/workout/exercise_section.dart';
+import 'package:trainalyzefrontend/entities/workout/mobility_section.dart';
+import 'package:trainalyzefrontend/entities/workout/pause_section.dart';
 import 'package:trainalyzefrontend/enviroment/env.dart';
-import 'package:trainalyzefrontend/pages/new_workout/models/workout_model.dart';
 import 'package:trainalyzefrontend/pages/new_workout/components/section_card.dart';
+import 'package:trainalyzefrontend/services/workout/workout_service.dart';
 
 class NewWorkout extends StatefulWidget {
-  const NewWorkout({super.key});
+  const NewWorkout({super.key, this.workoutService});
+
+  final WorkoutService? workoutService;
 
   @override
   State<NewWorkout> createState() => _NewWorkoutState();
@@ -14,12 +24,14 @@ class _NewWorkoutState extends State<NewWorkout> {
   final _formKey = GlobalKey<FormState>();
   final _trainingNameController = TextEditingController();
 
-  late WorkoutModel _workout;
+  late Workout _workout;
+  late WorkoutService _workoutService;
 
   @override
   void initState() {
     super.initState();
-    _workout = WorkoutModel(trainingName: '', sections: []);
+    _workout = Workout(name: '', sections: []);
+    _workoutService = widget.workoutService ?? WorkoutService();
   }
 
   @override
@@ -30,14 +42,34 @@ class _NewWorkoutState extends State<NewWorkout> {
 
   void _addSection(SectionType type) {
     setState(() {
-      _workout.sections.add(
-        WorkoutSection(
-          type: type,
-          duration: type == SectionType.warmUp ? '10:00' : null,
-          isDurationWarmUp: type == SectionType.warmUp ? true : null,
-          exercises: type != SectionType.warmUp ? [] : null,
-        ),
-      );
+      BaseSection newSection;
+      switch (type) {
+        case SectionType.warmup:
+          newSection = WarmUpSection(
+            duration: "10:00", // 10 Minuten als Startwert
+            isDurationWarmUp: true,
+          );
+          break;
+        case SectionType.training:
+          newSection = model.TrainingSection(
+            exerciseSections: <ExerciseSection>[],
+          );
+          break;
+        case SectionType.mobility:
+          newSection = MobilitySection(
+            name: '',
+            sets: 0,
+            reps: 0,
+          );
+          break;
+        case SectionType.pause:
+          newSection = PauseSection(
+            duration: "00:00",
+            isDurationPause: true,
+          );
+          break;
+      }
+      _workout.sections.add(newSection);
     });
   }
 
@@ -47,7 +79,7 @@ class _NewWorkoutState extends State<NewWorkout> {
     });
   }
 
-  void _updateSection(int index, WorkoutSection section) {
+  void _updateSection(int index, BaseSection section) {
     setState(() {
       _workout.sections[index] = section;
     });
@@ -55,17 +87,19 @@ class _NewWorkoutState extends State<NewWorkout> {
 
   Future<void> _saveWorkout() async {
     if (_formKey.currentState?.validate() ?? false) {
-      _workout.trainingName = _trainingNameController.text;
+      _workout.name = _trainingNameController.text;
 
       // JSON generieren
       final json = _workout.toJson();
       print('💾 Workout JSON:');
       print(json);
 
+      _workoutService.createWorkout(_workout);
+
       // TODO: Backend-Integration
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Workout "${_workout.trainingName}" gespeichert!'),
+          content: Text('Workout "${_workout.name}" gespeichert!'),
           backgroundColor: AppColors.primary,
         ),
       );
@@ -135,7 +169,7 @@ class _NewWorkoutState extends State<NewWorkout> {
                   children: [
                     Expanded(
                       child: ElevatedButton.icon(
-                        onPressed: () => _addSection(SectionType.warmUp),
+                        onPressed: () => _addSection(SectionType.warmup),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primary.withOpacity(0.1),
                           foregroundColor: AppColors.primary,

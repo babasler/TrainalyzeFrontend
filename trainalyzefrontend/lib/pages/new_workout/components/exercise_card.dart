@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trainalyzefrontend/entities/workout/pause_section.dart';
+import 'package:trainalyzefrontend/entities/workout/section_type.dart';
 import 'package:trainalyzefrontend/enviroment/env.dart';
 import 'package:trainalyzefrontend/entities/workout/exercise_section.dart';
 
@@ -74,9 +75,9 @@ class _ExerciseCardState extends State<ExerciseCard> {
       text: widget.exercise.weight.toString(),
     );
     _pauseDurationController = TextEditingController(
-      text: widget.exercise.pauseSection?.duration.toString() ?? '60',
+      text: widget.exercise.pauseSection.duration?.toString() ?? '00:00',
     );
-    _isPauseDuration = widget.exercise.pauseSection?.isDurationPause ?? true;
+    _isPauseDuration = widget.exercise.pauseSection.isDurationPause;
   }
 
   @override
@@ -90,21 +91,19 @@ class _ExerciseCardState extends State<ExerciseCard> {
 
   void _updateExercise() {
     final updatedExercise = ExerciseSection(
-      exerciseId: 0,
+      sectionType: SectionType.training,
       name: _selectedExercise,
       sets: int.tryParse(_setsController.text) ?? 0,
       reps: int.tryParse(_repsController.text) ?? 0,
       weight: widget.isTraining
           ? (double.tryParse(_weightController.text) ?? 0.0)
           : 0.0,
-      pauseSection: widget.isTraining && _isPauseDuration
-          ? PauseSection(
+      pauseSection: PauseSection(
               duration: _pauseDurationController.text.isNotEmpty
-                  ? double.tryParse(_pauseDurationController.text) ?? 0
-                  : 0,
+                  ? _pauseDurationController.text
+                  : "00:00",
               isDurationPause: _isPauseDuration,
-            )
-          : null,
+            ),
     );
     widget.onUpdate(updatedExercise);
   }
@@ -139,7 +138,7 @@ class _ExerciseCardState extends State<ExerciseCard> {
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    widget.isTraining ? 'Training Übung' : 'Mobility Übung',
+                    widget.isTraining ? 'Übung' : 'Mobility Übung',
                     style: TextStyle(
                       color: AppColors.textPrimary,
                       fontWeight: FontWeight.w500,
@@ -383,7 +382,7 @@ class _ExerciseCardState extends State<ExerciseCard> {
                               _pauseDurationController.clear();
                             } else {
                               // Wenn aktiviert, setze Standardwert
-                              _pauseDurationController.text = '60';
+                              _pauseDurationController.text = '00:00';
                             }
                           });
                           _updateExercise();

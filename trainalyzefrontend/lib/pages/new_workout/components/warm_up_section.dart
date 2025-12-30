@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trainalyzefrontend/entities/workout/warmup_section.dart';
 import 'package:trainalyzefrontend/enviroment/env.dart';
-import 'package:trainalyzefrontend/pages/new_workout/models/workout_model.dart';
 
 class WarmUpCard extends StatefulWidget {
   final WarmUpSection section;
@@ -39,10 +38,10 @@ class _WarmUpCardState extends State<WarmUpCard> {
 
   void _updateSection() {
     final updatedSection = WarmUpSection(
-      type: SectionType.warmup,
+      id: widget.section.id,
       duration: _isDurationWarmUp && _durationController.text.isNotEmpty
           ? _durationController.text
-          : null,
+          : "00:00",
       isDurationWarmUp: _isDurationWarmUp,
     );
     widget.onUpdate(updatedSection);

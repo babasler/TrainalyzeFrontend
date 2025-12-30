@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:trainalyzefrontend/entities/workout/base_section.dart';
 import 'package:trainalyzefrontend/entities/workout/mobility_section.dart';
+import 'package:trainalyzefrontend/entities/workout/training_section.dart' as model;
 import 'package:trainalyzefrontend/entities/workout/section_type.dart';
 import 'package:trainalyzefrontend/entities/workout/warmup_section.dart';
 import 'package:trainalyzefrontend/enviroment/env.dart';
 import 'package:trainalyzefrontend/pages/new_workout/components/warm_up_section.dart';
-import 'package:trainalyzefrontend/pages/new_workout/components/training_section.dart';
+import 'package:trainalyzefrontend/pages/new_workout/components/training_section.dart' as ui;
 import 'package:trainalyzefrontend/pages/new_workout/components/mobility_card.dart';
 
 class SectionCard extends StatelessWidget {
@@ -118,14 +119,22 @@ class SectionCard extends StatelessWidget {
   Widget _buildSectionContent() {
     switch (section.sectionType) {
       case SectionType.warmup:
-        return WarmUpCard(section: section as WarmUpSection, onUpdate: onUpdate);
+        return WarmUpCard(
+          section: section as WarmUpSection,
+          onUpdate: (WarmUpSection s) => onUpdate(s),
+        );
       case SectionType.training:
-        return TrainingSection(section: section as TrainingSection, onUpdate: onUpdate);
+        return ui.TrainingSection(
+          section: section as model.TrainingSection,
+          onUpdate: (model.TrainingSection s) => onUpdate(s),
+        );
       case SectionType.mobility:
-        return MobilityCard(section: section as MobilitySection, onUpdate: onUpdate);
+        return MobilityCard(
+          section: section as MobilitySection,
+          onUpdate: (MobilitySection s) => onUpdate(s),
+        );
       case SectionType.pause:
         return Container(); // Placeholder for pause section
     }
-    
   }
 }

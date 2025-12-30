@@ -6,7 +6,7 @@ import '../../entities/workout/workout.dart';
 import '../auth/jwt_service.dart';
 
 class WorkoutService {
-  final String workoutUrl = '${AppConfig.baseUrl}/trainalyze/workout';
+  final String workoutUrl = '${AppConfig.baseUrl}/workout';
 
   Future<String> createWorkout(Workout workout) async {
     try {

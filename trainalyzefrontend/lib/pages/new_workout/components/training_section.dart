@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:trainalyzefrontend/entities/workout/exercise_section.dart';
 import 'package:trainalyzefrontend/entities/workout/pause_section.dart';
+import 'package:trainalyzefrontend/entities/workout/training_section.dart' as model;
 import 'package:trainalyzefrontend/entities/workout/section_type.dart';
 import 'package:trainalyzefrontend/enviroment/env.dart';
 import 'package:trainalyzefrontend/pages/new_workout/components/exercise_card.dart';
 
 class TrainingSection extends StatefulWidget {
-  final TrainingSection section;
-  final Function(TrainingSection) onUpdate;
+  final model.TrainingSection section;
+  final Function(model.TrainingSection) onUpdate;
 
   const TrainingSection({
     super.key,
@@ -26,15 +27,19 @@ class _TrainingSectionState extends State<TrainingSection> {
   @override
   void initState() {
     super.initState();
-    _exercises = List.from(widget.section.exercises ?? []);
+    _exercises = List.from(widget.section.exerciseSections);
   }
 
   void _addExercise() {
     setState(() {
       _exercises.add(
-        TrainingSection(
-          type: SectionType.training,
-          exercises: [],
+        ExerciseSection(
+          sectionType: SectionType.training,
+          name: '',
+          sets: 0,
+          reps: 0,
+          weight: 0.0,
+          pauseSection: PauseSection(isDurationPause: false)
         ),
       );
     });
@@ -56,9 +61,9 @@ class _TrainingSectionState extends State<TrainingSection> {
   }
 
   void _updateSection() {
-    final updatedSection = ExerciseSection(
-      type: SectionType.training,
-      exercises: List.from(_exercises),
+    final updatedSection = model.TrainingSection(
+      id: widget.section.id,
+      exerciseSections: List.from(_exercises),
     );
     widget.onUpdate(updatedSection);
   }
